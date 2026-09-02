@@ -1,0 +1,2209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checador Elite — Tienda</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f5;
+  --bg2:#ffffff;
+  --bg3:#f0f0f0;
+  --bg-dark:#111111;
+  --bg-dark2:#1c1c1c;
+  --border:rgba(0,0,0,0.10);
+  --border2:rgba(0,0,0,0.20);
+  --text:#111111;
+  --text2:#444444;
+  --text3:#888888;
+  --accent:#cc0000;
+  --accent-bg:rgba(204,0,0,0.08);
+  --green:#16a34a;
+  --green-bg:rgba(22,163,74,0.10);
+  --red:#cc0000;
+  --red-bg:rgba(204,0,0,0.08);
+  --amber:#b45309;
+  --amber-bg:rgba(180,83,9,0.10);
+  --purple:#7c3aed;
+  --purple-bg:rgba(124,58,237,0.10);
+  --cyan:#0369a1;
+  --cyan-bg:rgba(3,105,161,0.10);
+  --radius:14px;
+  --radius-sm:8px;
+  --elite-red:#cc0000;
+  --elite-red2:#990000;
+  --shadow:0 2px 16px rgba(0,0,0,0.10);
+  --shadow-lg:0 8px 40px rgba(0,0,0,0.15);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+header{background:var(--bg-dark);padding:0 2.5rem;height:72px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 2px 20px rgba(0,0,0,0.4)}
+.logo{display:flex;align-items:center;gap:14px;text-decoration:none}
+.logo-marca{display:flex;flex-direction:column}
+.logo-nombre{font-size:15px;font-weight:800;color:#fff;letter-spacing:.12em;text-transform:uppercase;line-height:1}
+.logo-sub{font-size:9px;color:var(--elite-red);font-weight:600;letter-spacing:.2em;text-transform:uppercase;margin-top:2px}
+.logo-sep{width:2px;height:32px;background:var(--elite-red);border-radius:2px;margin:0 2px}
+.logo-checador{font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:.15em;text-transform:uppercase;writing-mode:horizontal-tb;align-self:center}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.header-centro{display:flex;flex-direction:column;align-items:center}
+#fecha-hoy{font-size:11px;color:rgba(255,255,255,0.45);text-transform:capitalize;letter-spacing:.03em}
+#reloj{font-family:'DM Mono',monospace;font-size:20px;color:#fff;font-weight:600;letter-spacing:.05em}
+.header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rol-badge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:700;letter-spacing:.05em}
+.rol-tienda{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.15)}
+.rol-admin{background:var(--elite-red);color:#fff;border:none}
+.rol-enc{background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.2)}
+.online-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px}
+.online-dot.on{background:#22c55e;box-shadow:0 0 6px #22c55e}
+.online-dot.off{background:#ef4444}
+main{flex:1;padding:2rem 2.5rem;max-width:1280px;margin:0 auto;width:100%}
+/* Cards */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow)}
+.card-label{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--elite-red);margin-bottom:10px}
+/* Inputs */
+select,input[type=text],input[type=password],input[type=date],input[type=time],input[type=number]{width:100%;background:#fff;border:1.5px solid rgba(0,0,0,0.15);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 14px;outline:none;transition:all .15s;appearance:none;-webkit-appearance:none}
+select:focus,input:focus{border-color:var(--elite-red);box-shadow:0 0 0 3px rgba(204,0,0,0.12)}
+select option{background:#fff;color:var(--text)}
+/* Buttons */
+button{font-family:'DM Sans',sans-serif;cursor:pointer;border-radius:var(--radius-sm);font-size:13px;font-weight:600;transition:all .15s;border:1.5px solid rgba(0,0,0,0.15);background:#fff;color:var(--text);padding:8px 16px;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+button:hover{background:var(--bg3);border-color:rgba(0,0,0,0.25)}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--elite-red);border:none;color:#fff;padding:10px 20px;font-size:14px;font-weight:700;letter-spacing:.03em;box-shadow:0 4px 14px rgba(204,0,0,0.35)}
+.btn-primary:hover{background:var(--elite-red2);box-shadow:0 6px 20px rgba(204,0,0,0.45)}
+.btn-export{font-size:13px;padding:8px 14px;border-color:rgba(22,163,74,0.3);color:var(--green);background:var(--green-bg);box-shadow:none}
+.btn-export:hover{background:rgba(22,163,74,0.15)}
+.btn-danger{font-size:11px;padding:3px 10px;border-color:rgba(204,0,0,0.3);color:var(--elite-red);background:transparent;box-shadow:none}
+.btn-danger:hover{background:var(--red-bg)}
+.btn-success{font-size:11px;padding:3px 10px;border-color:rgba(22,163,74,0.3);color:var(--green);background:transparent;box-shadow:none}
+.btn-success:hover{background:var(--green-bg)}
+.btn-warn{font-size:11px;padding:3px 10px;border-color:rgba(180,83,9,0.3);color:var(--amber);background:transparent;box-shadow:none}
+.btn-warn:hover{background:var(--amber-bg)}
+.btn-cyan{font-size:12px;padding:6px 14px;border-color:rgba(3,105,161,0.3);color:var(--cyan);background:var(--cyan-bg);box-shadow:none}
+/* Checador */
+.reg-grid{display:grid;grid-template-columns:1fr 300px;gap:1.5rem;align-items:start}
+.clave-display{background:var(--bg-dark);border:none;border-radius:var(--radius);padding:20px 24px;font-family:'DM Mono',monospace;font-size:30px;letter-spacing:12px;color:#fff;min-height:72px;display:flex;align-items:center;margin-bottom:1rem;box-shadow:inset 0 2px 8px rgba(0,0,0,0.3)}
+.clave-ph{font-size:13px;letter-spacing:0;color:rgba(255,255,255,0.35);font-family:'DM Sans',sans-serif;font-weight:400}
+.tipo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.tipo-btn{padding:12px 8px;font-size:13px;font-weight:600;text-align:center;border:1.5px solid var(--border2);background:#fff;color:var(--text2);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s}
+.tipo-btn:hover{border-color:var(--elite-red);color:var(--elite-red)}
+.tipo-btn.sel-entrada{background:#f0fdf4;border-color:var(--green);color:var(--green)}
+.tipo-btn.sel-salida{background:#fef2f2;border-color:var(--elite-red);color:var(--elite-red)}
+.tipo-btn.sel-ent-com{background:#eff6ff;border-color:var(--cyan);color:var(--cyan)}
+.tipo-btn.sel-sal-com{background:#fffbeb;border-color:var(--amber);color:var(--amber)}
+/* Teclado */
+.teclado{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tecla{aspect-ratio:1.3;font-size:22px;font-weight:700;font-family:'DM Mono',monospace;background:#fff;border:1.5px solid rgba(0,0,0,0.12);border-radius:var(--radius-sm);color:var(--bg-dark);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s;padding:0;width:100%;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
+.tecla:hover{background:var(--bg3);border-color:var(--elite-red);color:var(--elite-red)}
+.tecla:active{transform:scale(.93);box-shadow:none}
+.tecla-ok{background:var(--elite-red);border:none;color:#fff;font-size:24px;box-shadow:0 4px 14px rgba(204,0,0,0.4)}
+.tecla-ok:hover{background:var(--elite-red2);box-shadow:0 6px 20px rgba(204,0,0,0.5);color:#fff}
+/* Paneles */
+.panel-drop{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:.75rem;box-shadow:var(--shadow)}
+.panel-drop-header{background:var(--bg2);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;border-left:4px solid var(--elite-red)}
+.panel-drop-header:hover{background:var(--bg3)}
+.panel-drop-body{display:none;background:var(--bg2);padding:1.25rem;border-top:1px solid var(--border)}
+.panel-drop-body.open{display:block}
+.drop-arrow{transition:transform .2s;font-size:12px;color:var(--text3)}
+.drop-arrow.open{transform:rotate(180deg)}
+.sancion-alerta{background:#fff0f0;border:2px solid #cc0000;border-radius:var(--radius);padding:1rem 1.25rem;margin-top:1rem;display:flex;align-items:center;gap:12px}
+/* Stats */
+.stat-box{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:1rem;text-align:center;box-shadow:var(--shadow)}
+.stat-num{font-family:'DM Mono',monospace;font-size:28px;font-weight:700;color:var(--text);margin-bottom:4px}
+.stat-label{font-size:11px;color:var(--text3);font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+/* Tabla */
+table{width:100%;border-collapse:collapse}
+th{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:10px 14px;text-align:left;border-bottom:2px solid var(--border)}
+td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(204,0,0,0.03)}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700}
+.badge-entrada{background:#f0fdf4;color:var(--green);border:1px solid rgba(22,163,74,0.2)}
+.badge-salida{background:#fef2f2;color:var(--elite-red);border:1px solid rgba(204,0,0,0.2)}
+.badge-ent-com{background:#eff6ff;color:var(--cyan);border:1px solid rgba(3,105,161,0.2)}
+.badge-sal-com{background:#fffbeb;color:var(--amber);border:1px solid rgba(180,83,9,0.2)}
+.badge-visita{background:var(--purple-bg);color:var(--purple);font-size:10px;padding:2px 8px;border-radius:4px;margin-left:4px}
+/* Admin tabs */
+.admin-tabs{display:flex;gap:4px;background:var(--bg-dark);border-radius:var(--radius);padding:5px;margin-bottom:1.5rem;flex-wrap:wrap;box-shadow:var(--shadow)}
+.admin-tab{padding:7px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,0.5);font-family:'DM Sans',sans-serif;transition:all .15s;letter-spacing:.03em}
+.admin-tab:hover{color:#fff;background:rgba(255,255,255,0.08)}
+.admin-tab.active{background:var(--elite-red);color:#fff;box-shadow:0 2px 8px rgba(204,0,0,0.5)}
+/* Filtros */
+.filtros{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.filtros select,.filtros input{width:auto;flex:1;min-width:130px}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border:none;border-radius:var(--radius);padding:2rem;width:460px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:1.25rem;color:var(--text)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
+/* Panel huella */
+#panel-huella{display:none;position:fixed;inset:0;background:var(--bg-dark);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem}
+#panel-huella.open{display:flex}
+.huella-icono{font-size:72px;line-height:1;animation:latido 1s infinite}
+@keyframes latido{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.contador-wrap{position:relative;width:130px;height:130px}
+.contador-svg{transform:rotate(-90deg)}
+.contador-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:46px;font-weight:700;color:#fff}
+.barra-prog{width:320px;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden}
+.barra-fill{height:100%;border-radius:4px;transition:width .05s linear}
+#panel-resultado{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:201;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;backdrop-filter:blur(8px)}
+#panel-resultado.open{display:flex}
+#panel-bloqueado{display:none;position:fixed;inset:0;background:var(--bg-dark);z-index:500;flex-direction:column;align-items:center;justify-content:center;gap:1rem}
+.bloqueado-txt{color:#fff}#panel-bloqueado.open{display:flex}
+/* Calendario */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:1rem}
+.cal-dia{border-radius:var(--radius-sm);padding:7px 4px;text-align:center;font-size:11px;border:1.5px solid var(--border);background:#fff}
+.cal-dia.hoy{border-color:var(--elite-red);background:#fef2f2}
+.cal-dia .dia-num{font-size:14px;font-weight:700;color:var(--text)}
+.cal-dia .dia-nom{color:var(--text3);font-size:10px;text-transform:uppercase;font-weight:600}
+.semana-nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.semana-lbl{font-family:'DM Mono',monospace;font-size:13px;color:var(--elite-red);flex:1;text-align:center;font-weight:600}
+.descanso-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600}
+.d-lunes{background:#ecfeff;color:#0891b2}
+.d-martes{background:#eff6ff;color:var(--cyan)}
+.d-miercoles{background:#f0fdf4;color:var(--green)}
+.d-jueves{background:#fffbeb;color:var(--amber)}
+.d-viernes{background:#f5f3ff;color:var(--purple)}
+.d-sabado{background:#fef2f2;color:var(--elite-red)}
+.d-domingo{background:#f9fafb;color:var(--text3)}
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--elite-red)}
+@media print{header,.no-print,button{display:none!important}body{background:#fff;color:#000}.card{border:1px solid #ccc}table{font-size:11px}}
+@media(max-width:700px){.reg-grid{grid-template-columns:1fr}main{padding:1rem}header{padding:8px 1rem;height:auto}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div style="width:38px;height:38px;background:var(--elite-red);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 10px rgba(204,0,0,0.5)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12L5 10M5 10L12 3L19 10M5 10V20C5 20.55 5.45 21 6 21H9M19 10L21 12M19 10V20C19 20.55 18.55 21 18 21H15M9 21V15C9 14.45 9.45 14 10 14H14C14.55 14 15 14.45 15 15V21M9 21H15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="logo-sep"></div>
+    <div class="logo-marca">
+      <span class="logo-nombre">Zapaterías Elite</span>
+      <span class="logo-sub">Sistema de Asistencia</span>
+    </div>
+  </div>
+  <div class="header-centro">
+    <div id="fecha-hoy"></div>
+    <div id="reloj">00:00:00</div>
+  </div>
+  <div class="header-right">
+    <span id="indicador-lector" style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px">🖐 Sin lector</span>
+    <span style="font-size:12px;color:rgba(255,255,255,0.5);display:flex;align-items:center"><span class="online-dot off" id="dot-cx"></span><span id="txt-cx">Conectando...</span></span>
+    <span id="rol-badge" class="rol-badge rol-tienda">Modo tienda</span>
+    <span id="tienda-badge" style="font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,0.12);color:#fff;display:none"></span>
+    <button id="btn-cambiar-tienda" onclick="abrirCambioTienda()" style="font-size:11px;padding:4px 10px;color:rgba(255,255,255,0.5);border-color:rgba(255,255,255,0.15);background:transparent;box-shadow:none;display:none">⚙ Cambiar</button>
+    <button id="btn-enc-acceso" onclick="pedirEncargado()" style="font-size:12px;padding:5px 14px;color:#fff;border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);box-shadow:none">🔑 Encargado</button>
+    <button id="btn-admin-acceso" onclick="pedirAdmin()" style="font-size:12px;padding:5px 14px;background:var(--elite-red);color:#fff;border:none;box-shadow:0 2px 8px rgba(204,0,0,0.5)">🔒 Admin</button>
+    <button id="btn-salir-total" onclick="salirCompletamente()" style="display:none;font-size:12px;padding:5px 14px;background:#333;color:#fff;border:none;box-shadow:none" title="Cerrar sesión completamente">✕ Salir</button>
+  </div>
+</header>
+<div id="panel-setup" style="display:none;position:fixed;inset:0;background:#f5f5f5;z-index:1000;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem">
+  <div style="width:64px;height:64px;background:var(--elite-red);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 8px 24px rgba(204,0,0,0.3)">🏪</div>
+  <div style="font-size:24px;font-weight:800;color:var(--text);text-align:center">Configuración inicial</div>
+  <div style="font-size:14px;color:var(--text2);text-align:center;max-width:420px;line-height:1.8">Esta PC aún no tiene una sucursal asignada.<br>Selecciona tu tienda para continuar. <strong>Solo se hace una vez.</strong></div>
+  <div style="width:100%;max-width:380px;background:#fff;border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-lg)">
+    <div class="card-label">Selecciona tu sucursal</div>
+    <select id="setup-tienda" style="margin-bottom:1rem"><option value="">— Selecciona —</option></select>
+    <button class="btn-primary" onclick="confirmarSetupTienda()" style="width:100%;padding:12px">Confirmar sucursal</button>
+    <div id="setup-err" style="font-size:12px;color:var(--elite-red);margin-top:8px;display:none">Selecciona una sucursal para continuar.</div>
+  </div>
+</div>
+<div id="panel-cambiar-tienda" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;backdrop-filter:blur(6px)">
+  <div style="background:#fff;border-radius:var(--radius);padding:2rem;width:420px;max-width:95vw;box-shadow:var(--shadow-lg)">
+    <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px">Cambiar sucursal</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:1.25rem">Solo el encargado puede cambiar la sucursal de esta PC</div>
+    <div class="card-label">Clave de encargado</div>
+    <input type="password" id="cambio-clave-enc" placeholder="Clave especial del encargado" style="margin-bottom:12px">
+    <div class="card-label">Nueva sucursal</div>
+    <select id="cambio-tienda" style="margin-bottom:12px"><option value="">— Selecciona —</option></select>
+    <div id="cambio-err" style="font-size:12px;color:var(--elite-red);margin-bottom:10px;display:none"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="document.getElementById('panel-cambiar-tienda').style.display='none'" style="flex:1">Cancelar</button>
+      <button class="btn-primary" onclick="confirmarCambioTienda()" style="flex:1">Confirmar</button>
+    </div>
+  </div>
+</div>
+<!-- Modal registro huella -->
+<div id="modal-huella-reg" class="modal-overlay">
+  <div class="modal" style="max-width:420px;text-align:center">
+    <div style="font-size:48px;margin-bottom:1rem">🖐</div>
+    <div class="modal-title" style="text-align:center">Registro de huella dactilar</div>
+    <div style="font-size:14px;font-weight:700;color:var(--text)" id="hue-nombre"></div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:1rem" id="hue-tienda-txt"></div>
+    <div style="font-size:13px;font-weight:600;color:var(--cyan);margin-bottom:8px">Intento <span id="hue-intento">1 de 2</span></div>
+    <div style="font-size:14px;margin-bottom:1.5rem;min-height:40px;line-height:1.6" id="hue-msg">Preparando...</div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button id="hue-btn-cancelar" onclick="document.getElementById('modal-huella-reg').classList.remove('open');wsCallback=null">Cancelar</button>
+      <button id="hue-btn-ok" class="btn-primary" onclick="document.getElementById('modal-huella-reg').classList.remove('open')" style="display:none">✓ Listo</button>
+    </div>
+  </div>
+</div>
+<div id="modo-tienda">
+  <div class="reg-grid">
+    <div>
+      <div class="card" style="margin-bottom:1rem;background:var(--bg3);border-color:rgba(79,124,255,.3)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="font-size:24px">🏪</div>
+          <div>
+            <div style="font-size:16px;font-weight:800;color:var(--text)" id="lbl-tienda-header">Cargando...</div>
+            <div style="font-size:12px;color:var(--text3)">Sucursal asignada a esta PC</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-label">Clave de empleado</div>
+        <div class="clave-display"><span id="clave-texto" class="clave-ph">Ingresa tu clave...</span></div>
+        <div class="card-label">Tipo de chequeo</div>
+        <div class="tipo-grid">
+          <button class="tipo-btn" id="tb-entrada" onclick="selTipo('entrada')">Entrada</button>
+          <button class="tipo-btn" id="tb-salida" onclick="selTipo('salida')">Salida</button>
+          <button class="tipo-btn" id="tb-ent-com" onclick="selTipo('entrada-comida')">Entrada comida</button>
+          <button class="tipo-btn" id="tb-sal-com" onclick="selTipo('salida-comida')">Salida comida</button>
+        </div>
+      </div>
+      <div id="sancion-activa" style="display:none" class="sancion-alerta">
+        <div style="font-size:28px">⚠️</div>
+        <div><div style="font-size:14px;font-weight:800;color:var(--elite-red)">⚠️ SANCIÓN PENDIENTE</div>
+        <div id="sancion-txt" style="font-size:13px;color:var(--text2);margin-top:2px"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Teclado</div>
+      <div class="teclado">
+        <button class="tecla" onclick="presNum('7')">7</button><button class="tecla" onclick="presNum('8')">8</button><button class="tecla" onclick="presNum('9')">9</button>
+        <button class="tecla" onclick="presNum('4')">4</button><button class="tecla" onclick="presNum('5')">5</button><button class="tecla" onclick="presNum('6')">6</button>
+        <button class="tecla" onclick="presNum('1')">1</button><button class="tecla" onclick="presNum('2')">2</button><button class="tecla" onclick="presNum('3')">3</button>
+        <button class="tecla" onclick="borrar()" style="font-size:18px">⌫</button>
+        <button class="tecla" onclick="presNum('0')">0</button>
+        <button class="tecla tecla-ok" onclick="confirmar()">✓</button>
+      </div>
+    </div>
+  </div>
+  <div class="panel-drop">
+    <div class="panel-drop-header" onclick="toggleDrop('drop-hoy')">
+      <span style="font-size:13px;font-weight:600;color:var(--text)">📋 Actividad de hoy — <span id="lbl-tienda-hoy" style="color:var(--accent)">selecciona sucursal</span></span>
+      <div style="display:flex;align-items:center;gap:8px"><button onclick="event.stopPropagation();cargarHoy()" style="font-size:11px;padding:3px 8px" class="no-print">↻</button><span class="drop-arrow open" id="arr-drop-hoy">▼</span></div>
+    </div>
+    <div class="panel-drop-body open" id="drop-hoy">
+      <div style="overflow-x:auto"><table><thead><tr><th>Empleado</th><th>Tipo</th><th>Huella</th><th>Hora</th></tr></thead><tbody id="tbody-hoy"><tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text3)">Selecciona una sucursal.</td></tr></tbody></table></div>
+    </div>
+  </div>
+  <div class="panel-drop">
+    <div class="panel-drop-header" onclick="toggleDrop('drop-mis-ret')">
+      <span style="font-size:13px;font-weight:600;color:var(--text)">⏰ Consultar mis tiempos</span>
+      <span class="drop-arrow" id="arr-drop-mis-ret">▼</span>
+    </div>
+    <div class="panel-drop-body" id="drop-mis-ret">
+      <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap">
+        <input type="password" id="inp-clave-ret" placeholder="Tu clave numérica" style="flex:1;max-width:180px">
+        <input type="date" id="ret-desde" style="min-width:130px"><input type="date" id="ret-hasta" style="min-width:130px">
+        <button onclick="consultarMisTiempos()" class="btn-primary" style="padding:8px 16px">Consultar</button>
+      </div>
+      <div id="mis-tiempos-res" style="display:none">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem">
+          <div class="stat-box" style="border-color:rgba(248,113,113,.3)"><div class="stat-num" id="mt-retardos" style="color:var(--red)">0</div><div class="stat-label">Retardos semana actual</div></div>
+          <div class="stat-box" style="border-color:rgba(251,191,36,.3)"><div class="stat-num" id="mt-comida" style="color:var(--amber)">0 min</div><div class="stat-label">Exceso comida acumulado</div></div>
+          <div class="stat-box" style="border-color:rgba(52,211,153,.3)"><div class="stat-num" id="mt-extras" style="color:var(--green)">0 min</div><div class="stat-label">Horas extras acumuladas</div></div>
+        </div>
+        <div id="mt-saldo-box" style="display:none;background:#fff3cd;border:2px solid var(--amber);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:1rem">
+          <div style="font-size:12px;font-weight:800;color:var(--amber);margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase">⏱ SALDO A DEBER POR RETARDOS</div>
+          <div style="font-size:20px;font-weight:800;color:var(--text)" id="mt-saldo-min"></div>
+          <div style="font-size:12px;color:var(--text);margin-top:4px">Debes quedarte estos minutos adicionales después de tu hora de salida para saldar tus retardos.<br>Una vez que lo hagas, el admin marcará tu saldo como pagado.</div>
+        </div>
+        <div id="mt-sanc-alert" style="display:none" class="sancion-alerta">
+          <div style="font-size:24px">⚠️</div>
+          <div><div style="font-size:13px;font-weight:600;color:var(--red)">SANCIÓN PENDIENTE</div><div id="mt-sanc-txt" style="font-size:12px;color:var(--text2);margin-top:2px"></div></div>
+        </div>
+        <div class="panel-drop" style="margin-top:.75rem">
+          <div class="panel-drop-header" onclick="toggleDrop('drop-det-ret')" style="background:#f0f0f0;border-left:4px solid var(--elite-red)"><span style="font-size:12px;font-weight:600;color:var(--text)">▸ Detalle retardos</span><span class="drop-arrow" id="arr-drop-det-ret">▼</span></div>
+          <div class="panel-drop-body" id="drop-det-ret"><table><thead><tr><th>Fecha</th><th>Entrada</th><th>Límite</th><th>Min tarde</th><th>Estado saldo</th></tr></thead><tbody id="tbody-mis-ret"></tbody></table></div>
+        </div>
+        <div class="panel-drop" style="margin-top:.5rem">
+          <div class="panel-drop-header" onclick="toggleDrop('drop-det-ext')" style="background:#f0f0f0;border-left:4px solid var(--elite-red)"><span style="font-size:12px;font-weight:600;color:var(--text)">▸ Detalle extras y comida</span><span class="drop-arrow" id="arr-drop-det-ext">▼</span></div>
+          <div class="panel-drop-body" id="drop-det-ext"><table><thead><tr><th>Tipo</th><th>Minutos acumulados</th><th>Nota</th></tr></thead><tbody id="tbody-mis-ext"></tbody></table></div>
+        </div>
+      </div>
+      <div id="mis-ret-msg" style="font-size:13px;color:var(--text3);display:none;margin-top:8px"></div>
+    </div>
+  </div>
+  <div class="panel-drop">
+    <div class="panel-drop-header" onclick="toggleDrop('drop-chat-tienda');cargarChatTienda()">
+      <span style="font-size:13px;font-weight:600;color:var(--text)">💬 Mensajes de administración
+        <span id="chat-badge-tienda" style="display:none;background:var(--elite-red);color:#fff;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px">Nuevo</span>
+      </span>
+      <span class="drop-arrow" id="arr-drop-chat-tienda">▼</span>
+    </div>
+    <div class="panel-drop-body" id="drop-chat-tienda">
+      <div id="chat-tienda-msgs" style="height:220px;overflow-y:auto;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;margin-bottom:10px">
+        <div style="font-size:13px;color:var(--text3);text-align:center;padding:1rem">Sin mensajes</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="chat-inp-tienda" placeholder="Escribe un mensaje al admin..." style="flex:1" onkeydown="if(event.key==='Enter')enviarMensajeTienda()">
+        <button class="btn-primary" onclick="enviarMensajeTienda()" style="padding:8px 16px">Enviar</button>
+      </div>
+    </div>
+  </div>
+  <div class="panel-drop">
+    <div class="panel-drop-header" onclick="toggleDrop('drop-cal')">
+      <span style="font-size:13px;font-weight:600;color:var(--text)">📅 Horarios de la semana</span>
+      <span class="drop-arrow" id="arr-drop-cal">▼</span>
+    </div>
+    <div class="panel-drop-body" id="drop-cal">
+      <div class="semana-nav" style="margin-bottom:1rem"><button onclick="navSemana(-1)" style="padding:5px 12px">◀</button><div class="semana-lbl" id="lbl-semana">Semana actual</div><button onclick="navSemana(1)" style="padding:5px 12px">▶</button></div>
+      <div class="cal-grid" id="cal-dias"></div>
+      <div id="cal-empleados"><div style="font-size:13px;color:var(--text3)">Selecciona una sucursal.</div></div>
+    </div>
+  </div>
+</div>
+<div id="modo-encargado" style="display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px">
+    <div><div style="font-size:18px;font-weight:800;color:var(--text)">Panel encargado — <span id="enc-tienda-lbl" style="color:var(--cyan)"></span></div><div style="font-size:13px;color:var(--text3)">Horarios y retardos · Solo tu sucursal</div></div>
+    <div style="display:flex;gap:8px" class="no-print"><button onclick="window.print()" style="font-size:13px">🖨️ Imprimir</button><button onclick="cerrarEncargado()" style="border-color:rgba(248,113,113,.3);color:var(--red);background:transparent">Cerrar sesión</button></div>
+  </div>
+  <div class="card" style="margin-bottom:1rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+      <div class="card-label" style="margin:0">⏰ Retardos de mi tienda</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print"><input type="date" id="enc-ret-desde" style="width:auto;min-width:130px"><input type="date" id="enc-ret-hasta" style="width:auto;min-width:130px"><button onclick="cargarRetardosEnc()" style="font-size:12px;padding:6px 12px">Buscar</button></div>
+    </div>
+    <div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Empleado</th><th>Entrada</th><th>Límite</th><th>Min tarde</th><th>Semana</th></tr></thead><tbody id="tbody-ret-enc"><tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text3)">Selecciona fechas y busca.</td></tr></tbody></table></div>
+  </div>
+  <div class="card" style="margin-bottom:1rem">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:1rem">
+      <div class="semana-nav" style="flex:1"><button onclick="navSemanaEnc(-1)" style="padding:5px 12px">◀</button><div class="semana-lbl" id="lbl-semana-enc"></div><button onclick="navSemanaEnc(1)" style="padding:5px 12px">▶</button></div>
+      <button onclick="copiarSemanaAnterior()" class="btn-cyan no-print">📋 Copiar semana anterior</button>
+    </div>
+    <div class="cal-grid" id="cal-dias-enc"></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Asignar horarios de la semana</div>
+    <div id="enc-tabla-horarios"><div style="font-size:13px;color:var(--text3)">Cargando...</div></div>
+    <div style="margin-top:1rem;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap" class="no-print">
+      <button class="btn-cyan" onclick="abrirModalTurno(tiendaEncargado)" style="font-size:12px;padding:6px 14px">🔄 Cambio de turno</button>
+      <button onclick="copiarSemanaAnterior()" class="btn-cyan">📋 Copiar semana anterior</button>
+      <button class="btn-primary" onclick="guardarHorarios()">💾 Guardar horarios</button>
+    </div>
+    <div id="enc-msg" style="font-size:12px;margin-top:8px;display:none"></div>
+  </div>
+</div>
+<div id="modo-admin" style="display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px">
+    <div><div style="font-size:18px;font-weight:800;color:var(--text)">Panel administrador</div><div style="font-size:13px;color:var(--text3)">Acceso completo — todas las tiendas en tiempo real</div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print"><button onclick="window.print()" style="font-size:13px">🖨️ Imprimir</button><button onclick="cerrarAdmin()" style="border-color:rgba(248,113,113,.3);color:var(--red);background:transparent">Cerrar sesión</button></div>
+  </div>
+  <div class="admin-tabs no-print">
+    <button class="admin-tab active" onclick="adminTab('historial',this)">📋 Historial</button>
+    <button class="admin-tab" onclick="adminTab('retardos',this)">⏰ Retardos</button>
+    <button class="admin-tab" onclick="adminTab('extras',this)">⭐ Extras/Comida</button>
+    <button class="admin-tab" onclick="adminTab('sanciones',this)">⚠️ Sanciones</button>
+    <button class="admin-tab" onclick="adminTab('horarios',this)">📅 Horarios</button>
+    <button class="admin-tab" onclick="adminTab('empleados',this)">👥 Empleados</button>
+    <button class="admin-tab" onclick="adminTab('visitas',this)">🔄 Permisos</button>
+    <button class="admin-tab" onclick="adminTab('huellas',this)">🖐 Huellas</button>
+    <button class="admin-tab" onclick="adminTab('seguridad',this)">🔐 Seguridad</button>
+    <button class="admin-tab" onclick="adminTab('turnos',this)">🔄 Turnos</button>
+    <button class="admin-tab" onclick="adminTab('puestos',this)">🏷 Puestos</button>
+    <button class="admin-tab" onclick="adminTab('chat',this)">💬 Chat</button>
+    <button class="admin-tab" onclick="adminTab('sistema',this)">⚙ Sistema</button>
+  </div>
+  <div id="admin-historial"><div class="card"><div class="filtros"><select id="f-tienda" onchange="renderHistorial()" style="min-width:160px"><option value="">Todas las sucursales</option></select><input type="date" id="f-fecha" onchange="renderHistorial()"><button onclick="limpiarFiltros()" class="no-print">Limpiar</button><button class="btn-export no-print" onclick="exportarCSV('historial')">⬇ CSV</button><button onclick="renderHistorial()" style="font-size:12px;padding:5px 10px" class="no-print">↻</button></div><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Hora</th><th>Sucursal</th><th>Empleado</th><th>Tipo</th><th>Huella</th></tr></thead><tbody id="tbody-hist"><tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div></div></div>
+  <div id="admin-retardos" style="display:none"><div class="card"><div class="filtros"><select id="fr-tienda" style="min-width:160px"><option value="">Todas las sucursales</option></select><input type="date" id="fr-desde"><input type="date" id="fr-hasta"><button onclick="renderRetardos()" class="no-print">Buscar</button><button class="btn-export no-print" onclick="exportarCSV('retardos')">⬇ CSV</button></div><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Sucursal</th><th>Empleado</th><th>Entrada</th><th>Límite</th><th>Min tarde</th><th>Saldo a deber</th><th>Semana</th><th class="no-print">Marcar pagado</th><th class="no-print">Borrar</th></tr></thead><tbody id="tbody-ret"><tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div></div></div>
+  <div id="admin-extras" style="display:none"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px"><div class="card-label" style="margin:0">Acumulados por empleado</div><div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print"><select id="fex-tienda" onchange="renderExtras()" style="width:auto;min-width:160px;padding:6px 10px;font-size:13px"><option value="">Todas las sucursales</option></select><button class="btn-export" onclick="exportarCSV('extras')">⬇ CSV</button><button onclick="renderExtras()" style="font-size:12px;padding:5px 10px">↻</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Sucursal</th><th>Empleado</th><th>Min extras</th><th>Min comida exceso</th><th class="no-print">Editar extras</th><th class="no-print">Editar comida</th><th class="no-print">Reset</th></tr></thead><tbody id="tbody-extras"><tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div></div></div>
+  <div id="admin-sanciones" style="display:none"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px"><div class="card-label" style="margin:0">Sanciones</div><div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print"><select id="fsan-tienda" onchange="renderSanciones()" style="width:auto;min-width:160px;padding:6px 10px;font-size:13px"><option value="">Todas las sucursales</option></select><button class="btn-export" onclick="exportarCSV('sanciones')">⬇ CSV</button><button onclick="renderSanciones()" style="font-size:12px;padding:5px 10px">↻</button></div></div><div id="lista-sanciones"><div style="font-size:13px;color:var(--text3)">Cargando...</div></div></div></div>
+  <div id="admin-horarios" style="display:none"><div class="card"><div class="filtros" style="margin-bottom:1rem"><select id="fh-tienda" onchange="renderHorariosAdmin()" style="min-width:160px"><option value="">— Selecciona sucursal —</option></select><div class="semana-nav" style="flex:1"><button onclick="navSemanaAdmin(-1)" style="padding:5px 10px">◀</button><div class="semana-lbl" id="lbl-semana-admin"></div><button onclick="navSemanaAdmin(1)" style="padding:5px 10px">▶</button></div></div><div class="cal-grid" id="cal-dias-admin" style="margin-bottom:1rem"></div><div id="admin-tabla-horarios"><div style="font-size:13px;color:var(--text3)">Selecciona una sucursal.</div></div><div style="margin-top:1rem;display:flex;gap:8px;justify-content:flex-end" class="no-print"><button onclick="copiarSemanaAdmin()" class="btn-cyan">📋 Copiar semana anterior</button><button class="btn-primary" onclick="guardarHorariosAdmin()">💾 Guardar</button></div><div id="admin-hor-msg" style="font-size:12px;margin-top:8px;display:none"></div></div></div>
+  <div id="admin-empleados" style="display:none"><div class="card"><div class="card-label">Sucursal</div><select id="cfg-tienda" onchange="renderCfgEmps()" style="margin-bottom:1rem"><option value="">— Selecciona —</option></select><div id="cfg-lista" style="margin-bottom:1rem;font-size:13px"></div><div id="cfg-form" style="display:none"><div class="card-label">Nuevo empleado</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><input type="text" id="cfg-nombre" placeholder="Nombre completo"><input type="text" id="cfg-clave" placeholder="Clave numérica"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px"><input type="text" id="cfg-puesto" placeholder="Puesto"><input type="time" id="cfg-hora-entrada" value="09:30"><input type="time" id="cfg-hora-salida" value="19:30"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px"><select id="cfg-descanso"><option value="lunes">Desc: Lunes</option><option value="martes">Desc: Martes</option><option value="miercoles">Desc: Miércoles</option><option value="jueves">Desc: Jueves</option><option value="viernes">Desc: Viernes</option><option value="sabado">Desc: Sábado</option><option value="domingo" selected>Desc: Domingo</option></select><input type="number" id="cfg-min-comida" placeholder="Min comida" min="0" max="180" value="60"><input type="text" id="cfg-clave-enc" placeholder="Clave encargado"></div><div style="display:flex;gap:8px;margin-bottom:8px;align-items:center"><label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="cfg-encargado" style="width:auto;padding:0;accent-color:var(--accent)"> Es encargado</label></div><div style="display:flex;justify-content:flex-end"><button class="btn-primary" onclick="agregarEmp()">+ Agregar</button></div><div id="cfg-msg" style="font-size:12px;margin-top:8px;display:none"></div></div></div></div>
+  <div id="admin-visitas" style="display:none"><div class="card"><p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.7;background:var(--bg3);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border)">Sin permiso → Clave incorrecta en otra tienda. Permiso abierto hasta cancelarlo.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><div class="card-label">Empleado (origen)</div><select id="v-origen" onchange="renderVisitaEmps()" style="margin-bottom:8px"><option value="">— Selecciona —</option></select><select id="v-emp"><option value="">— Empleado —</option></select></div><div><div class="card-label">Puede checar en</div><select id="v-destino"><option value="">— Destino —</option></select></div></div><div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem"><button class="btn-primary" onclick="agregarVisita()">+ Autorizar</button></div><div class="card-label">Permisos activos</div><div id="lista-visitas"><div style="font-size:13px;color:var(--text3)">Cargando...</div></div></div></div>
+  <div id="admin-seguridad" style="display:none"><div class="card"><div class="card-label">Log de accesos al sistema</div><div class="filtros"><select id="flog-tipo" style="min-width:130px"><option value="">Todos</option><option value="admin">Admin</option><option value="encargado">Encargado</option><option value="empleado">Empleado</option></select><input type="date" id="flog-fecha"><button onclick="renderLog()" class="no-print">Buscar</button><button onclick="renderLog()" style="font-size:12px;padding:5px 10px" class="no-print">↻</button></div><div style="overflow-x:auto"><table><thead><tr><th>Fecha/Hora</th><th>Tipo</th><th>Tienda</th><th>Resultado</th></tr></thead><tbody id="tbody-log"><tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div></div></div>
+  <div id="admin-huellas" style="display:none"><div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+      <div class="card-label" style="margin:0">🖐 Registro de huellas por empleado</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <select id="fhue-tienda" onchange="renderHuellas()" style="width:auto;min-width:160px;padding:6px 10px;font-size:13px"><option value="">Todas las sucursales</option></select>
+        <button onclick="renderHuellas()" style="font-size:12px;padding:5px 10px">↻</button>
+      </div>
+    </div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:1rem;padding:10px 14px;background:#eff6ff;border-radius:8px;border-left:3px solid var(--cyan)">
+      ℹ️ Para registrar la huella: haz clic en <strong>Registrar</strong>, pide al empleado que ponga el dedo en el lector <strong>2 veces</strong> para confirmar. El Elite Huella debe estar corriendo.
+    </div>
+    <div style="overflow-x:auto"><table><thead><tr><th>Sucursal</th><th>Empleado</th><th>Clave</th><th>Estado huella</th><th class="no-print">Acción</th></tr></thead>
+    <tbody id="tbody-huellas"><tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div>
+  </div></div>
+
+  <div id="admin-sistema" style="display:none">
+    <div class="card">
+      <div class="card-label">📊 Estadísticas</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem" id="stats-grid"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem" class="no-print">
+        <button class="btn-export" onclick="exportarCSV('historial')" style="flex:1">⬇ CSV Historial</button>
+        <button class="btn-export" onclick="exportarCSV('retardos')" style="flex:1">⬇ CSV Retardos</button>
+        <button class="btn-export" onclick="exportarCSV('sanciones')" style="flex:1">⬇ CSV Sanciones</button>
+      </div>
+    </div>
+
+    <div id="panel-cambiar-pass" style="display:none" class="card" style="margin-top:1rem">
+      <div class="card-label">🔐 Contraseña Admin 1 (principal)</div>
+      <div style="display:flex;gap:8px;margin-bottom:1rem"><input type="password" id="inp-nueva-admin" placeholder="Nueva contraseña Admin 1" style="flex:1"><button onclick="cambiarAdmin(1)">Cambiar</button></div>
+      <div id="ok-admin" style="font-size:12px;color:var(--green);margin-bottom:1rem;display:none">✓ Contraseña Admin 1 actualizada</div>
+      <div class="card-label" style="margin-top:1rem">👤 Contraseña Admin 2 (sin cambiar contraseñas)</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Admin 2 tiene las mismas facultades excepto cambiar contraseñas y agregar tiendas.</div>
+      <div style="display:flex;gap:8px;margin-bottom:6px"><input type="password" id="inp-nueva-admin2" placeholder="Nueva contraseña Admin 2" style="flex:1"><button onclick="cambiarAdmin(2)">Cambiar</button></div>
+      <div id="ok-admin2" style="font-size:12px;color:var(--green);margin-bottom:1rem;display:none">✓ Contraseña Admin 2 actualizada</div>
+    </div>
+
+    <div id="panel-nueva-tienda" style="display:none;margin-top:1rem" class="card">
+      <div class="card-label">🏪 Agregar nueva sucursal</div>
+      <div style="display:grid;grid-template-columns:120px 1fr auto;gap:8px;margin-bottom:6px">
+        <input type="text" id="inp-nueva-tienda-num" placeholder="Número (ej: 942)">
+        <input type="text" id="inp-nueva-tienda-nom" placeholder="Nombre (ej: CENTRO)">
+        <button class="btn-primary" onclick="agregarTienda()">Agregar</button>
+      </div>
+      <div id="ok-tienda" style="font-size:12px;color:var(--green);display:none"></div>
+      <div id="err-tienda" style="font-size:12px;color:var(--red);display:none"></div>
+    </div>
+  </div>
+
+  <!-- CAMBIOS DE TURNO TEMPORALES -->
+  <div id="admin-turnos" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+        <div class="card-label" style="margin:0">🔄 Cambios de turno temporales</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select id="ftur-tienda" onchange="renderTurnos()" style="width:auto;min-width:160px;padding:6px 10px;font-size:13px"><option value="">Todas las sucursales</option></select>
+          <button class="btn-primary" onclick="abrirModalTurno()" style="font-size:12px;padding:6px 14px">+ Nuevo cambio</button>
+          <button onclick="renderTurnos()" style="font-size:12px;padding:5px 10px">↻</button>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:1rem;padding:10px 14px;background:#eff6ff;border-radius:8px;border-left:3px solid var(--cyan)">
+        ℹ️ Los cambios aplican automáticamente al checar. Si se registra el mismo día, los retardos generados con el horario anterior se cancelan con nota.
+      </div>
+      <div style="overflow-x:auto"><table><thead><tr>
+        <th>Sucursal</th><th>Empleado</th><th>Turno nuevo</th><th>Desde</th><th>Hasta</th><th>Duración</th><th>Motivo</th><th>Estado</th><th class="no-print">Acción</th>
+      </tr></thead><tbody id="tbody-turnos"><tr><td colspan="9" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- MODAL NUEVO TURNO -->
+  <div class="modal-overlay" id="modal-turno">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-title">🔄 Nuevo cambio de turno</div>
+      <div style="display:grid;gap:12px">
+        <div>
+          <div class="card-label">Sucursal</div>
+          <select id="mtur-tienda" onchange="cargarEmpleadosTurno()"><option value="">— Selecciona —</option></select>
+        </div>
+        <div>
+          <div class="card-label">Empleado</div>
+          <select id="mtur-emp"><option value="">— Selecciona sucursal primero —</option></select>
+        </div>
+        <div>
+          <div class="card-label">Turno nuevo</div>
+          <select id="mtur-turno"><option value="">— Selecciona sucursal primero —</option></select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <div class="card-label">Fecha inicio</div>
+            <input type="date" id="mtur-desde">
+          </div>
+          <div>
+            <div class="card-label">Duración</div>
+            <select id="mtur-duracion" onchange="calcularFechaFin()">
+              <option value="1dia">1 día</option>
+              <option value="rango">Rango de fechas</option>
+              <option value="semana">1 semana (lun–dom)</option>
+              <option value="mes">1 mes</option>
+              <option value="indefinido">Indefinido</option>
+            </select>
+          </div>
+        </div>
+        <div id="mtur-hasta-wrap" style="display:none">
+          <div class="card-label">Fecha fin</div>
+          <input type="date" id="mtur-hasta">
+        </div>
+        <div>
+          <div class="card-label">Motivo</div>
+          <select id="mtur-motivo">
+            <option>Rolar turno</option>
+            <option>Suplente de encargado</option>
+            <option>Acuerdo entre empleados</option>
+            <option>Indicación de administración</option>
+            <option>Corrección del mismo día</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div id="mtur-msg" style="font-size:12px;color:var(--elite-red);display:none"></div>
+      </div>
+      <div class="modal-actions">
+        <button onclick="cerrarModal('modal-turno')">Cancelar</button>
+        <button class="btn-primary" onclick="guardarCambioTurno()">Aplicar cambio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUESTOS DE TRABAJO -->
+  <div id="admin-puestos" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+        <div class="card-label" style="margin:0">🏷 Puestos de trabajo</div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="inp-nuevo-puesto" placeholder="Nuevo puesto..." style="width:200px;padding:6px 12px">
+          <button class="btn-primary" onclick="agregarPuesto()" style="font-size:12px;padding:6px 14px">+ Agregar</button>
+        </div>
+      </div>
+      <div id="lista-puestos"><div style="font-size:13px;color:var(--text3)">Cargando...</div></div>
+    </div>
+  </div>
+  <div id="admin-chat" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+        <div class="card-label" style="margin:0">💬 Chat con tiendas</div>
+        <div style="display:flex;gap:8px">
+          <select id="fchat-tienda" onchange="renderChat()" style="width:auto;min-width:180px;padding:6px 10px;font-size:13px"><option value="">— Selecciona tienda —</option></select>
+          <button onclick="renderChat()" style="font-size:12px;padding:5px 10px">↻</button>
+        </div>
+      </div>
+      <div id="chat-mensajes" style="height:300px;overflow-y:auto;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:13px;color:var(--text3);text-align:center;margin:auto">Selecciona una tienda para ver el chat</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="chat-inp" placeholder="Escribe un mensaje para la tienda..." style="flex:1" onkeydown="if(event.key==='Enter')enviarMensajeAdmin()">
+        <button class="btn-primary" onclick="enviarMensajeAdmin()" style="padding:8px 20px">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+<div id="panel-huella"><div class="huella-icono">🖐</div><div style="font-size:22px;font-weight:600;color:#fff">PON TU HUELLA AHORA</div><div style="font-size:14px;color:var(--text2)" id="huella-nombre"></div><div class="contador-wrap"><svg class="contador-svg" width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--bg3)" stroke-width="8"/><circle id="circulo-prog" cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="8" stroke-dasharray="326.7" stroke-dashoffset="0" stroke-linecap="round"/></svg><div class="contador-num" id="contador-num">10</div></div><div class="barra-prog"><div class="barra-fill" id="barra-fill" style="width:100%;background:var(--accent)"></div></div><div style="font-size:12px;color:var(--text3)">U.are.U 4500 — coloca el dedo suavemente</div><div id="btns-prueba" style="display:flex;gap:10px;margin-top:.5rem"><button onclick="simularHuella(true)" style="background:var(--green-bg);border-color:var(--green);color:var(--green);font-size:12px;padding:6px 16px">✓ OK (prueba)</button><button onclick="simularHuella(false)" style="background:var(--red-bg);border-color:var(--red);color:var(--red);font-size:12px;padding:6px 16px">✗ Falla (prueba)</button></div></div>
+<div id="panel-resultado"><div style="font-size:64px" id="res-icono" class="no-print"></div><div style="font-size:24px;font-weight:800;text-align:center;color:#fff" id="res-titulo"></div><div style="font-family:'DM Mono',monospace;font-size:32px;font-weight:700;color:#fff" id="res-hora"></div><div style="font-size:14px;color:rgba(255,255,255,0.7);text-align:center;max-width:420px;line-height:1.7;white-space:pre-line" id="res-sub"></div><div id="res-sancion" style="display:none;background:var(--red-bg);border:1px solid var(--red);border-radius:var(--radius);padding:1rem 1.5rem;text-align:center;max-width:400px"><div style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:4px">⚠️ NUEVA SANCIÓN</div><div style="font-size:15px;color:#fff;font-weight:500">Mañana quedarse apertura a cierre</div><div id="res-sancion-det" style="font-size:12px;color:var(--text2);margin-top:4px"></div></div><button onclick="cerrarResultado()" class="btn-primary" style="margin-top:1rem">Continuar</button></div>
+<div id="panel-bloqueado"><div style="font-size:48px">🔒</div><div style="font-size:20px;font-weight:600;color:#fff">Acceso bloqueado temporalmente</div><div style="font-size:14px;color:var(--text2)">Demasiados intentos fallidos</div><div style="font-family:'DM Mono',monospace;font-size:36px;color:var(--amber)" id="bloqueo-timer">5:00</div><div style="font-size:13px;color:var(--text3)">Espera para volver a intentar</div></div>
+<div class="modal-overlay" id="modal-admin"><div class="modal"><div class="modal-title">🔒 Acceso administrador</div><input type="password" id="inp-admin" placeholder="Contraseña" style="margin-bottom:8px"><div id="err-admin" style="font-size:12px;color:var(--red);margin-bottom:6px;display:none">Contraseña incorrecta</div><div id="intentos-admin" style="font-size:11px;color:var(--amber);margin-bottom:8px;display:none"></div><div class="modal-actions"><button onclick="cerrarModal('modal-admin')">Cancelar</button><button class="btn-primary" id="btn-entrar-admin" onclick="verificarAdmin()">Entrar</button></div></div></div>
+<div class="modal-overlay" id="modal-encargado"><div class="modal"><div class="modal-title">🔑 Acceso encargado</div><div class="card-label">Tu sucursal</div><select id="enc-sel-tienda" style="margin-bottom:12px"><option value="">— Selecciona —</option></select><div class="card-label">Clave de encargado</div><input type="password" id="inp-enc" placeholder="Clave especial" style="margin-bottom:8px"><div id="err-enc" style="font-size:12px;color:var(--red);margin-bottom:8px;display:none">Clave incorrecta</div><div class="modal-actions"><button onclick="cerrarModal('modal-encargado')">Cancelar</button><button class="btn-primary" id="btn-entrar-enc" onclick="verificarEncargado()">Entrar</button></div></div></div>
+<div class="modal-overlay" id="modal-editar"><div class="modal"><div class="modal-title">✏️ Editar empleado</div><input type="hidden" id="edit-id"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><div><div class="card-label">Nombre</div><input type="text" id="edit-nombre"></div><div><div class="card-label">Clave checar</div><input type="text" id="edit-clave"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><div><div class="card-label">Puesto</div><input type="text" id="edit-puesto"></div><div><div class="card-label">Clave encargado</div><input type="text" id="edit-clave-enc"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><div><div class="card-label">Hora entrada</div><input type="time" id="edit-hora-entrada"></div><div><div class="card-label">Hora salida</div><input type="time" id="edit-hora-salida"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><div><div class="card-label">Día descanso</div><select id="edit-descanso"><option value="lunes">Lunes</option><option value="martes">Martes</option><option value="miercoles">Miércoles</option><option value="jueves">Jueves</option><option value="viernes">Viernes</option><option value="sabado">Sábado</option><option value="domingo">Domingo</option></select></div><div><div class="card-label">Min comida</div><input type="number" id="edit-min-comida" min="0" max="180"></div></div><div id="edit-msg" style="font-size:12px;margin-bottom:8px;display:none"></div><div class="modal-actions"><button onclick="cerrarModal('modal-editar')">Cancelar</button><button class="btn-primary" onclick="guardarEdicion()">Guardar</button></div></div></div>
+<div class="modal-overlay" id="modal-acum"><div class="modal"><div class="modal-title" id="acum-titulo">Modificar acumulado</div><input type="hidden" id="acum-id"><input type="hidden" id="acum-campo"><div class="card-label">Valor actual</div><div id="acum-actual" style="font-size:18px;font-weight:600;color:var(--amber);margin-bottom:12px"></div><div class="card-label">Nuevo valor (minutos)</div><input type="number" id="acum-nuevo" min="0" style="margin-bottom:8px"><div id="acum-msg" style="font-size:12px;color:var(--red);display:none;margin-bottom:8px"></div><div class="modal-actions"><button onclick="cerrarModal('modal-acum')">Cancelar</button><button class="btn-primary" onclick="guardarAcumulado()">Guardar</button></div></div></div>
+<script>
+const _k=['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6','InRmcHpmZ2ZzbGN0anF3cHN0Y3N1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMzE4OTIs','ImV4cCI6MjA5MzkwNzg5Mn0.bsUTaLYD2clJGCjdHRnjQAm30NCErEUT_tEUBQpc3Pg'];
+const SU='https://tfpzfgfslctjqwpstcsu.supabase.co',SK=_k.join('');
+const H={'Content-Type':'application/json','apikey':SK,'Authorization':'Bearer '+SK};
+async function db(m,t,b,p){const r=await fetch(SU+'/rest/v1/'+t+(p?'?'+p:''),{method:m,headers:{...H,'Prefer':m==='POST'?'return=representation':''},body:b?JSON.stringify(b):undefined});if(!r.ok){const e=await r.text();throw new Error(e);}const x=await r.text();return x?JSON.parse(x):[];}
+const GET=(t,p)=>db('GET',t,null,p),POST=(t,b)=>db('POST',t,b),DEL=(t,p)=>db('DELETE',t,null,p),PATCH=(t,b,p)=>db('PATCH',t,b,p);
+const TIENDAS=[{num:'902',nom:'ILERGUI'},{num:'903',nom:'TULYEHUALCO'},{num:'904',nom:'ILERGUI'},{num:'905',nom:'TULYEHUALCO'},{num:'906',nom:'ILERGUI'},{num:'907',nom:'TULYEHUALCO'},{num:'908',nom:'TEHUACAN'},{num:'909',nom:'TEHUACAN'},{num:'910',nom:'ETXEA'},{num:'911',nom:'TEHUACAN'},{num:'912',nom:'IRILAR'},{num:'913',nom:'IXTAPALUCA'},{num:'914',nom:'IXTAPALUCA'},{num:'915',nom:'IRILAR'},{num:'916',nom:'ZUBIONDO'},{num:'917',nom:'ETXEA'},{num:'918',nom:'ETXEA'},{num:'921',nom:'MENDISCO'},{num:'922',nom:'MAINE'},{num:'926',nom:'ETXEA'},{num:'927',nom:'AZAROA'},{num:'929',nom:'ZUBIONDO'},{num:'931',nom:'MAINE'},{num:'932',nom:'LAGUN'},{num:'937',nom:'ZUBIONDO'},{num:'941',nom:'MAINE'}];
+const DIAS_NOM=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],DIAS_FULL=['domingo','lunes','martes','miercoles','jueves','viernes','sabado'];
+
+// ── TIENDA FIJA POR PC ────────────────────────────────────
+const STORAGE_KEY='elite_tienda_num';
+function getTiendaGuardada(){return localStorage.getItem(STORAGE_KEY)||'';}
+function setTiendaGuardada(num){localStorage.setItem(STORAGE_KEY,num);}
+function iniciarConTienda(num){
+  tiendaActual=num;
+  const t=TIENDAS.find(x=>x.num===num);
+  const lbl=t?num+' — '+t.nom:num;
+  // Header badge
+  const badge=document.getElementById('tienda-badge');
+  badge.textContent=lbl;badge.style.display='';
+  document.getElementById('btn-cambiar-tienda').style.display='';
+  // Card de tienda en modo
+  const h=document.getElementById('lbl-tienda-header');
+  if(h)h.textContent=lbl;
+  // Actividad hoy
+  document.getElementById('lbl-tienda-hoy').textContent=lbl;
+  cargarHoy();
+  renderCal('cal-dias',semanaOffset);
+  document.getElementById('lbl-semana').textContent=fmtSemana(semanaOffset);
+  cargarHorariosVista(num,semanaOffset);
+}
+function verificarTiendaGuardada(){
+  poblarSelect('setup-tienda',false);
+  poblarSelect('cambio-tienda',false);
+  const guardada=getTiendaGuardada();
+  if(guardada&&TIENDAS.find(x=>x.num===guardada)){
+    iniciarConTienda(guardada);
+  }else{
+    // Primera vez — mostrar pantalla de setup
+    document.getElementById('panel-setup').style.display='flex';
+  }
+}
+function confirmarSetupTienda(){
+  const num=document.getElementById('setup-tienda').value;
+  if(!num){document.getElementById('setup-err').style.display='block';return;}
+  document.getElementById('setup-err').style.display='none';
+  setTiendaGuardada(num);
+  document.getElementById('panel-setup').style.display='none';
+  iniciarConTienda(num);
+}
+function abrirCambioTienda(){
+  document.getElementById('cambio-clave-enc').value='';
+  document.getElementById('cambio-err').style.display='none';
+  poblarSelect('cambio-tienda',false);
+  document.getElementById('panel-cambiar-tienda').style.display='flex';
+}
+async function confirmarCambioTienda(){
+  const claveEnc=document.getElementById('cambio-clave-enc').value;
+  const nuevaTienda=document.getElementById('cambio-tienda').value;
+  const errEl=document.getElementById('cambio-err');
+  if(!claveEnc||!nuevaTienda){errEl.textContent='Completa todos los campos.';errEl.style.display='block';return;}
+  try{
+    // Verificar clave encargado en cualquier tienda
+    const emps=await GET('empleados','select=*&clave_encargado=eq.'+claveEnc+'&encargado=eq.true&limit=1');
+    if(!emps.length){errEl.textContent='Clave de encargado incorrecta.';errEl.style.display='block';return;}
+    setTiendaGuardada(nuevaTienda);
+    document.getElementById('panel-cambiar-tienda').style.display='none';
+    iniciarConTienda(nuevaTienda);
+  }catch(e){errEl.textContent='Error: '+e.message;errEl.style.display='block';}
+}
+// ── LECTOR DE HUELLAS — WebSocket ────────────────────────
+let ws=null,wsConectado=false,wsCallback=null,modoLector='desconectado';
+function conectarLector(){
+  try{
+    const w=new WebSocket('ws://localhost:8765');
+    w.onopen=()=>{wsConectado=true;ws=w;modoLector='conectando';w.send(JSON.stringify({cmd:'ping'}));actualizarIndicadorLector();};
+    w.onmessage=(e)=>{try{const d=JSON.parse(e.data);if(d.cmd==='pong'){modoLector=d.modo||'real';actualizarIndicadorLector();}else if(d.cmd==='resultado'&&wsCallback){wsCallback(d.resultado);wsCallback=null;}}catch{}};
+    w.onerror=()=>{wsConectado=false;modoLector='desconectado';ws=null;actualizarIndicadorLector();};
+    w.onclose=()=>{wsConectado=false;modoLector='desconectado';ws=null;actualizarIndicadorLector();setTimeout(conectarLector,5000);};
+  }catch{wsConectado=false;setTimeout(conectarLector,8000);}
+}
+function actualizarIndicadorLector(){
+  const el=document.getElementById('indicador-lector');if(!el)return;
+  if(modoLector==='real'){el.textContent='🖐 Lector OK';el.style.color='var(--green)';}
+  else if(modoLector==='simulacion'){el.textContent='🖐 Simulación';el.style.color='var(--amber)';}
+  else{el.textContent='🖐 Sin lector';el.style.color='var(--text3)';}
+}
+function capturarHuellaReal(timeoutSeg,onResultado){
+  if(!wsConectado||!ws){onResultado('sin_servicio');return;}
+  wsCallback=onResultado;
+  ws.send(JSON.stringify({cmd:'capturar',timeout:timeoutSeg}));
+}
+conectarLector();
+
+// ── Estado ────────────────────────────────────────────────
+let modo='tienda',tiendaActual='',tiendaEncargado='',clave='',tipoSel='',_tipoGuardado='';
+let empActual=null,horaClaveReg=null,contTimer=null;
+let semanaOffset=0,semanaEncOffset=0,semanaAdminOffset=0,horariosEditados={};
+let intentosClave=0,intentosAdmin=0,bloqueoHasta=0,sessionAdminTimer=null;
+function tick(){const n=new Date();document.getElementById('reloj').textContent=n.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',second:'2-digit'});document.getElementById('fecha-hoy').textContent=n.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
+tick();setInterval(tick,1000);
+async function probarCx(){try{await GET('config','select=clave&limit=1');document.getElementById('dot-cx').className='online-dot on';document.getElementById('txt-cx').textContent='En línea';}catch{document.getElementById('dot-cx').className='online-dot off';document.getElementById('txt-cx').textContent='Sin conexión';}}
+probarCx();setInterval(probarCx,30000);
+function fmtH(d){return new Date(d).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+function fmtF(d){return new Date(d).toLocaleDateString('es-MX');}
+function nomT(n){const t=TIENDAS.find(x=>x.num===n);return t?n+' '+t.nom:n;}
+function hoy(){return new Date().toLocaleDateString('sv');}
+function lunesDe(d=new Date()){const dd=new Date(d);const dia=dd.getDay();dd.setDate(dd.getDate()+(dia===0?-6:1-dia));dd.setHours(0,0,0,0);return dd;}
+function lunesStr(o=0){const d=lunesDe();d.setDate(d.getDate()+o*7);return d.toLocaleDateString('sv');}
+function fmtSemana(o=0){const l=lunesDe();l.setDate(l.getDate()+o*7);const d=new Date(l);d.setDate(d.getDate()+6);return l.toLocaleDateString('es-MX',{day:'numeric',month:'short'})+' – '+d.toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});}
+function poblarSelect(id,conTodas,excluir){const sel=document.getElementById(id);if(!sel)return;const cur=sel.value;sel.innerHTML=(conTodas?'<option value="">Todas las sucursales</option>':'<option value="">— Selecciona sucursal —</option>')+TIENDAS.filter(t=>t.num!==excluir).map(t=>`<option value="${t.num}"${t.num===cur?' selected':''}>${t.num} – ${t.nom}</option>`).join('');}
+poblarSelect('sel-tienda',false);poblarSelect('enc-sel-tienda',false);
+function toggleDrop(id){const b=document.getElementById(id),a=document.getElementById('arr-'+id);b.classList.toggle('open');if(a)a.classList.toggle('open');}
+function estaBloqueado(){return Date.now()<bloqueoHasta;}
+function iniciarBloqueo(min){bloqueoHasta=Date.now()+min*60000;document.getElementById('panel-bloqueado').classList.add('open');const i=setInterval(()=>{const r=Math.max(0,bloqueoHasta-Date.now()),m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);document.getElementById('bloqueo-timer').textContent=m+':'+(s<10?'0':'')+s;if(r<=0){clearInterval(i);document.getElementById('panel-bloqueado').classList.remove('open');intentosClave=0;intentosAdmin=0;}},1000);}
+async function logAcceso(tipo,tienda,exitoso){try{await POST('log_accesos',{tipo,tienda:tienda||null,exitoso});}catch{}}
+function resetSessionTimer(){clearTimeout(sessionAdminTimer);sessionAdminTimer=setTimeout(()=>{if(modo==='admin'){cerrarAdmin();alert('Sesión admin cerrada por inactividad (30 min).');}},30*60*1000);}
+let nivelAdmin=1; // 1=admin completo, 2=admin sin cambiar contraseña
+function pedirAdmin(){if(estaBloqueado())return;document.getElementById('inp-admin').value='';document.getElementById('err-admin').style.display='none';document.getElementById('intentos-admin').style.display='none';document.getElementById('modal-admin').classList.add('open');setTimeout(()=>document.getElementById('inp-admin').focus(),100);}
+async function verificarAdmin(){if(estaBloqueado())return;const pass=document.getElementById('inp-admin').value;document.getElementById('btn-entrar-admin').disabled=true;try{
+  const r=await GET('config','select=clave,valor');
+  const cfg={};r.forEach(x=>cfg[x.clave]=x.valor);
+  const pass1=cfg['adminPass']||'admin123';
+  const pass2=cfg['adminPass2']||'';
+  if(pass===pass1){
+    nivelAdmin=1;intentosAdmin=0;await logAcceso('admin1',null,true);cerrarModal('modal-admin');entrarAdmin();
+  }else if(pass2&&pass===pass2){
+    nivelAdmin=2;intentosAdmin=0;await logAcceso('admin2',null,true);cerrarModal('modal-admin');entrarAdmin();
+  }else{
+    intentosAdmin++;await logAcceso('admin',null,false);
+    if(intentosAdmin>=3){iniciarBloqueo(10);cerrarModal('modal-admin');}
+    else{document.getElementById('err-admin').style.display='block';document.getElementById('intentos-admin').textContent='Intentos restantes: '+(3-intentosAdmin);document.getElementById('intentos-admin').style.display='block';}
+  }
+}catch{document.getElementById('err-admin').textContent='Error de conexión';document.getElementById('err-admin').style.display='block';}document.getElementById('btn-entrar-admin').disabled=false;}
+document.getElementById('inp-admin').addEventListener('keydown',e=>{if(e.key==='Enter')verificarAdmin();});
+function entrarAdmin(){
+  modo='admin';
+  document.getElementById('modo-tienda').style.display='none';
+  document.getElementById('modo-encargado').style.display='none';
+  document.getElementById('modo-admin').style.display='block';
+  document.getElementById('rol-badge').textContent=nivelAdmin===1?'Administrador':'Administrador 2';
+  document.getElementById('rol-badge').className='rol-badge rol-admin';
+  document.getElementById('btn-admin-acceso').style.display='none';
+  document.getElementById('btn-enc-acceso').style.display='none';
+  poblarSelect('f-tienda',true);poblarSelect('fr-tienda',true);poblarSelect('cfg-tienda',false);
+  poblarSelect('v-origen',false);poblarSelect('v-destino',false);poblarSelect('fh-tienda',false);
+  poblarSelect('fex-tienda',true);poblarSelect('fsan-tienda',true);poblarSelect('fhue-tienda',true);
+  document.getElementById('f-fecha').value=hoy();
+  renderCal('cal-dias-admin',semanaAdminOffset);
+  document.getElementById('lbl-semana-admin').textContent=fmtSemana(semanaAdminOffset);
+  renderHistorial();
+  document.getElementById('btn-salir-total').style.display='';
+  document.addEventListener('click',resetSessionTimer);
+}
+function cerrarAdmin(){modo='tienda';clearTimeout(sessionAdminTimer);document.removeEventListener('click',resetSessionTimer);document.getElementById('modo-tienda').style.display='block';document.getElementById('modo-admin').style.display='none';document.getElementById('rol-badge').textContent='Modo tienda';document.getElementById('rol-badge').className='rol-badge rol-tienda';document.getElementById('btn-admin-acceso').style.display='';document.getElementById('btn-enc-acceso').style.display='';cargarHoy();}
+function cerrarModal(id){document.getElementById(id).classList.remove('open');}
+function adminTab(id,btn){
+  ['historial','retardos','extras','sanciones','horarios','empleados','visitas','huellas','seguridad','chat','sistema','turnos','puestos'].forEach(x=>{
+    const el=document.getElementById('admin-'+x);
+    if(el)el.style.display=x===id?'block':'none';
+  });
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  resetSessionTimer();
+  const fns={
+    historial:renderHistorial,retardos:renderRetardos,extras:renderExtras,
+    sanciones:renderSanciones,sistema:renderSistema,seguridad:renderLog,
+    huellas:renderHuellas,chat:()=>{poblarSelect('fchat-tienda',false);renderChat();},
+    turnos:()=>{poblarSelect('ftur-tienda',true);poblarSelect('mtur-tienda',false);renderTurnos();},
+    puestos:renderPuestos
+  };
+  if(fns[id])fns[id]();
+  if(id==='visitas')cargarVisitas();
+}
+function pedirEncargado(){if(estaBloqueado())return;document.getElementById('inp-enc').value='';document.getElementById('err-enc').style.display='none';poblarSelect('enc-sel-tienda',false);document.getElementById('modal-encargado').classList.add('open');setTimeout(()=>document.getElementById('inp-enc').focus(),100);}
+async function verificarEncargado(){const tienda=document.getElementById('enc-sel-tienda').value,claveEnc=document.getElementById('inp-enc').value;if(!tienda){document.getElementById('err-enc').textContent='Selecciona tu sucursal';document.getElementById('err-enc').style.display='block';return;}document.getElementById('btn-entrar-enc').disabled=true;try{const emps=await GET('empleados','select=*&tienda=eq.'+tienda+'&clave_encargado=eq.'+claveEnc+'&encargado=eq.true');if(emps.length){await logAcceso('encargado',tienda,true);cerrarModal('modal-encargado');tiendaEncargado=tienda;entrarEncargado();}else{await logAcceso('encargado',tienda,false);document.getElementById('err-enc').style.display='block';}}catch{document.getElementById('err-enc').textContent='Error';document.getElementById('err-enc').style.display='block';}document.getElementById('btn-entrar-enc').disabled=false;}
+document.getElementById('inp-enc').addEventListener('keydown',e=>{if(e.key==='Enter')verificarEncargado();});
+function entrarEncargado(){
+  modo='encargado';
+  document.getElementById('modo-tienda').style.display='none';
+  document.getElementById('modo-admin').style.display='none';
+  document.getElementById('modo-encargado').style.display='block';
+  document.getElementById('rol-badge').textContent='Encargado';
+  document.getElementById('rol-badge').className='rol-badge rol-enc';
+  document.getElementById('btn-enc-acceso').style.display='none';
+  document.getElementById('btn-admin-acceso').style.display='none';
+  // Mostrar botón cambiar tienda SOLO cuando encargado está autenticado
+  document.getElementById('btn-cambiar-tienda').style.display='';
+  document.getElementById('enc-tienda-lbl').textContent=nomT(tiendaEncargado);
+  renderCal('cal-dias-enc',semanaEncOffset);
+  document.getElementById('lbl-semana-enc').textContent=fmtSemana(semanaEncOffset);
+  cargarEditorHorarios();
+}
+function cerrarEncargado(){
+  modo='tienda';
+  document.getElementById('modo-tienda').style.display='block';
+  document.getElementById('modo-encargado').style.display='none';
+  document.getElementById('rol-badge').textContent='Modo tienda';
+  document.getElementById('rol-badge').className='rol-badge rol-tienda';
+  document.getElementById('btn-admin-acceso').style.display='';
+  document.getElementById('btn-enc-acceso').style.display='';
+  // Ocultar botón cambiar tienda al cerrar sesión de encargado
+  document.getElementById('btn-cambiar-tienda').style.display='none';
+  tiendaEncargado='';horariosEditados={};cargarHoy();
+}
+function cambiarTienda(num){
+  tiendaActual=num||tiendaActual;
+  document.getElementById('lbl-tienda-hoy').textContent=tiendaActual?nomT(tiendaActual):'selecciona sucursal';
+  resetClave();cargarHoy();
+  if(tiendaActual){renderCal('cal-dias',semanaOffset);document.getElementById('lbl-semana').textContent=fmtSemana(semanaOffset);cargarHorariosVista(tiendaActual,semanaOffset);}
+}
+function presNum(n){if(modo!=='tienda'||estaBloqueado()||clave.length>=8)return;clave+=n;renderClave();}
+function borrar(){if(modo!=='tienda')return;clave=clave.slice(0,-1);renderClave();}
+function resetClave(){clave='';renderClave();}
+function renderClave(){const el=document.getElementById('clave-texto');if(!clave){el.textContent='Ingresa tu clave...';el.className='clave-ph';}else{el.textContent='●'.repeat(clave.length);el.className='';el.style.cssText='letter-spacing:8px;font-size:26px;font-family:"DM Mono",monospace;color:#fff';}}
+const tipoMap={'entrada':{id:'tb-entrada',cls:'sel-entrada'},'salida':{id:'tb-salida',cls:'sel-salida'},'entrada-comida':{id:'tb-ent-com',cls:'sel-ent-com'},'salida-comida':{id:'tb-sal-com',cls:'sel-sal-com'}};
+function selTipo(t){if(modo!=='tienda')return;tipoSel=t;Object.keys(tipoMap).forEach(k=>{document.getElementById(tipoMap[k].id).className='tipo-btn'+(k===t?' '+tipoMap[k].cls:'');});}
+async function confirmar(){
+  if(modo!=='tienda'||estaBloqueado())return;
+  if(!tiendaActual){alert('Selecciona una sucursal.');return;}
+  if(!tipoSel){alert('Selecciona el tipo de chequeo.');return;}
+  if(!clave){alert('Ingresa tu clave.');return;}
+  horaClaveReg=new Date();_tipoGuardado=tipoSel;
+  try{
+    let emps=await GET('empleados','select=*&tienda=eq.'+tiendaActual+'&clave=eq.'+clave);
+    let emp=emps[0]||null,esVisita=false;
+    if(!emp){const perms=await GET('visitas','select=*&destino=eq.'+tiendaActual+'&clave=eq.'+clave);if(perms.length){const orig=await GET('empleados','select=*&clave=eq.'+clave+'&limit=1');if(orig.length){emp={...orig[0],tienda_origen:perms[0].origen};esVisita=true;}}}
+    if(!emp){intentosClave++;await logAcceso('empleado',tiendaActual,false);if(intentosClave>=5){iniciarBloqueo(5);resetClave();return;}mostrarResultado('❌','CLAVE INCORRECTA','','Intentos restantes: '+(5-intentosClave),'err');resetClave();return;}
+    intentosClave=0;await logAcceso('empleado',tiendaActual,true);
+    const semana=lunesStr(0);
+    const fechaHoy=horaClaveReg?new Date().toLocaleDateString('sv'):hoy();
+    const [hors,cambioActivo]=await Promise.all([
+      GET('horarios_semana','select=*&tienda=eq.'+tiendaActual+'&empleado_clave=eq.'+clave+'&semana_inicio=eq.'+semana),
+      obtenerTurnoActivo(clave,fechaHoy)
+    ]);
+    // Cambio temporal tiene prioridad sobre horario semanal
+    if(cambioActivo){
+      emp.hora_limite=cambioActivo.hora_entrada;
+      emp.hora_salida=cambioActivo.hora_salida;
+      emp.minutos_comida=cambioActivo.minutos_comida;
+      emp.es_encargado_turno=cambioActivo.es_encargado_turno;
+      emp._turno_cambiado=cambioActivo.turno_nuevo;
+      emp._turno_inventario=cambioActivo.turno_nuevo==='Inventario';
+    }else if(hors.length){
+      emp.hora_limite=hors[0].hora_entrada;
+      emp.dia_descanso=hors[0].dia_descanso;
+      emp.hora_salida=hors[0].hora_salida;
+      emp.minutos_comida=hors[0].minutos_comida;
+      emp.es_encargado_turno=hors[0].es_encargado_turno||false;
+      emp._turno_inventario=hors[0].turno==='Inventario'||false;
+    }
+    empActual={...emp,esVisita};
+    const sancs=await GET('sanciones','select=*&empleado_clave=eq.'+clave+'&cumplida=eq.false');
+    document.getElementById('sancion-activa').style.display=sancs.length?'flex':'none';
+    if(sancs.length)document.getElementById('sancion-txt').textContent=sancs.length+' sanción(es) pendiente(s) — Mañana quedarse apertura a cierre';
+    iniciarContador();
+  }catch(e){alert('Error: '+e.message);resetClave();}
+}
+function iniciarContador(){
+  resetClave();tipoSel='';Object.keys(tipoMap).forEach(k=>{document.getElementById(tipoMap[k].id).className='tipo-btn';});
+  document.getElementById('huella-nombre').textContent=empActual.nombre;
+  document.getElementById('panel-huella').classList.add('open');
+  const total=326.7,SEGS=10;
+  document.getElementById('contador-num').textContent=SEGS;
+  document.getElementById('circulo-prog').style.strokeDashoffset=0;
+  document.getElementById('barra-fill').style.width='100%';
+  document.getElementById('barra-fill').style.background='var(--accent)';
+  document.getElementById('circulo-prog').style.stroke='var(--accent)';
+  const inicio=Date.now(),dur=SEGS*1000;
+  // Si lector real conectado → verificar con template guardado
+  if(wsConectado&&ws){
+    const btnsPrueba=document.getElementById('btns-prueba');
+    if(btnsPrueba)btnsPrueba.style.display='none';
+    // Obtener template guardado del empleado
+    obtenerTemplateEmpleado(empActual.clave).then(template=>{
+      const cmdVerif=template
+        ?JSON.stringify({cmd:'verificar',template,timeout:10})
+        :JSON.stringify({cmd:'registrar',timeout:10});
+      wsCallback=(resultado)=>{
+        clearInterval(contTimer);
+        document.getElementById('panel-huella').classList.remove('open');
+        if(btnsPrueba)btnsPrueba.style.display='';
+        if(resultado==='ok'||resultado==='template')simularHuella(true);
+        else if(resultado==='no_coincide'){
+          simularHuella(false);
+          setTimeout(()=>{
+            document.getElementById('res-sub').textContent='La huella no coincide con el registro.\nContacta al administrador.';
+          },100);
+        }else simularHuella(false);
+      };
+      // Si no tiene huella registrada — aceptar pero avisar
+      if(!template){
+        wsCallback=null;
+        clearInterval(contTimer);
+        document.getElementById('panel-huella').classList.remove('open');
+        if(btnsPrueba)btnsPrueba.style.display='';
+        simularHuella(true);
+        setTimeout(()=>{
+          document.getElementById('res-titulo').textContent='CHECADA REGISTRADA';
+          document.getElementById('res-sub').textContent=
+            (document.getElementById('res-sub').textContent||empActual?.nombre||'')+
+            '\n⚠️ Sin lector activo — verificar cámaras de seguridad';
+        },100);
+        return;
+      }
+      ws.send(cmdVerif);
+    });
+  }
+  contTimer=setInterval(()=>{
+    const el=Date.now()-inicio,pct=Math.min(1,el/dur);
+    document.getElementById('contador-num').textContent=Math.ceil(SEGS*(1-pct))||1;
+    document.getElementById('circulo-prog').style.strokeDashoffset=total*pct;
+    document.getElementById('barra-fill').style.width=((1-pct)*100)+'%';
+    if(pct>0.7){document.getElementById('barra-fill').style.background='var(--amber)';document.getElementById('circulo-prog').style.stroke='var(--amber)';}
+    if(pct>0.85){document.getElementById('barra-fill').style.background='var(--red)';document.getElementById('circulo-prog').style.stroke='var(--red)';}
+    if(el>=dur&&!wsConectado){clearInterval(contTimer);document.getElementById('panel-huella').classList.remove('open');document.getElementById('circulo-prog').style.stroke='var(--accent)';mostrarResultado('❌','TIEMPO AGOTADO','','No se registró nada.\nIntenta de nuevo desde el principio.','err');empActual=null;}
+  },50);
+}
+async function simularHuella(exito){
+  clearInterval(contTimer);document.getElementById('panel-huella').classList.remove('open');document.getElementById('circulo-prog').style.stroke='var(--accent)';
+  if(!empActual)return;
+  const horaEntrada=horaClaveReg||new Date(),horaStr=fmtH(horaEntrada);
+  try{
+    await POST('registros',{tienda:tiendaActual,empleado:empActual.nombre,tienda_origen:empActual.tienda_origen||empActual.tienda||tiendaActual,es_visita:!!empActual.esVisita,tipo:_tipoGuardado,estado_huella:exito?'completo':'incompleto',ts:horaEntrada.toISOString()});
+    let nuevaSancion=null;
+    let resExtra=null;
+    if(_tipoGuardado==='entrada')nuevaSancion=await verificarRetardo(empActual,horaEntrada);
+    if(_tipoGuardado==='salida')resExtra=await verificarExtras(empActual,horaEntrada);
+    if(_tipoGuardado==='salida-comida')await verificarExcesoComida(empActual,horaEntrada);
+    // Construir mensaje de salida con desglose
+    let subMsg=empActual.nombre+(empActual.esVisita?' (visita)':'');
+    if(_tipoGuardado==='salida'&&resExtra){
+      if(resExtra.saldoCubierto>0)subMsg+='\n✓ Saldo cubierto: '+resExtra.saldoCubierto+' min';
+      if(resExtra.minutosExtras>0)subMsg+='\n⭐ Extras acumulados: +'+resExtra.minutosExtras+' min';
+      if(!resExtra.saldoCubierto&&!resExtra.minutosExtras)subMsg+='\nSalida normal';
+    }
+    if(exito&&empActual._turno_inventario){
+      // Turno inventario — solo registro sin verificaciones
+      mostrarResultado('📦','INVENTARIO REGISTRADO',horaStr,
+        empActual.nombre+'\n⚠️ Turno especial — Sin retardos ni extras',
+        'ok',null);
+    }else if(exito&&!wsConectado){
+      mostrarResultado('✅','CHECADA REGISTRADA',horaStr,subMsg+'\n⚠️ Sin lector activo — verificar cámaras de seguridad','warn',nuevaSancion);
+    }else if(exito){
+      mostrarResultado('✅','AMBOS FILTROS EXITOSOS',horaStr,subMsg,'ok',nuevaSancion);
+    }else{
+      mostrarResultado('⚠️','REGISTRO INCOMPLETO',horaStr,'Huella no reconocida — verificar cámaras\nHora guardada: '+horaStr,'warn',nuevaSancion);
+    }
+  }catch(e){mostrarResultado('❌','ERROR DE CONEXIÓN','','No se pudo guardar el registro.','err');}
+  empActual=null;cargarHoy();
+}
+async function verificarRetardo(emp,horaEntrada){
+  // Sin retardos para encargados, turno Apertura a Cierre O turno Inventario
+  if(emp.encargado||emp.es_encargado_turno||emp._turno_inventario)return null;
+  const hl=emp.hora_limite||'09:30',pts=hl.split(':').map(Number);
+  const limMs=(pts[0]*60+pts[1])*60000,entMs=(horaEntrada.getHours()*60+horaEntrada.getMinutes())*60000;
+  const minTarde=Math.round((entMs-limMs)/60000);if(minTarde<=0)return null;
+  const semana=lunesStr(0);
+  await POST('retardos',{empleado_clave:emp.clave,empleado_nombre:emp.nombre,tienda:tiendaActual,fecha:horaEntrada.toLocaleDateString('sv'),hora_entrada:fmtH(horaEntrada),hora_limite:hl,minutos_tarde:minTarde,semana_inicio:semana,saldo_pagado:false});
+  const rets=await GET('retardos','select=id&empleado_clave=eq.'+emp.clave+'&semana_inicio=eq.'+semana);
+  if(rets.length>=4){
+    const exist=await GET('sanciones','select=id&empleado_clave=eq.'+emp.clave+'&semana_inicio=eq.'+semana);
+    if(!exist.length){
+      await POST('sanciones',{empleado_clave:emp.clave,empleado_nombre:emp.nombre,tienda:tiendaActual,semana_inicio:semana,retardos_semana:rets.length,cumplida:false});
+      return{retardos:rets.length};
+    }
+  }
+  return null;
+}
+async function verificarExtras(emp,horaSalida){
+  // Sin extras para encargados, turno Apertura a Cierre O turno Inventario
+  if(emp.encargado||emp.es_encargado_turno||emp._turno_inventario)return;
+  if(!emp.hora_salida)return;
+  const fecha=horaSalida.toLocaleDateString('sv');
+  const pts=emp.hora_salida.split(':').map(Number);
+  const limMs=(pts[0]*60+pts[1])*60000;
+  const salMs=(horaSalida.getHours()*60+horaSalida.getMinutes())*60000;
+  const minDesp=Math.round((salMs-limMs)/60000); // minutos después de hora salida
+  if(minDesp<=0)return; // salió antes o exacto
+
+  // Obtener saldo pendiente de retardos no pagados
+  const retsPend=await GET('retardos','select=*&empleado_clave=eq.'+emp.clave+'&saldo_pagado=eq.false&order=fecha.asc');
+  const saldoPendiente=retsPend.reduce((a,r)=>a+(r.minutos_tarde-(r.minutos_cubiertos||0)),0);
+
+  let minRestantes=minDesp;
+  let saldoCubierto=0;
+  let minutosExtras=0;
+
+  // 1. Primero cubrir saldo pendiente
+  if(saldoPendiente>0 && minRestantes>0){
+    saldoCubierto=Math.min(saldoPendiente,minRestantes);
+    minRestantes-=saldoCubierto;
+    // Marcar retardos como pagados en orden
+    let porCubrir=saldoCubierto;
+    for(const r of retsPend){
+      if(porCubrir<=0)break;
+      const pendEsteRet=r.minutos_tarde-(r.minutos_cubiertos||0);
+      if(porCubrir>=pendEsteRet){
+        await PATCH('retardos',{saldo_pagado:true,minutos_cubiertos:r.minutos_tarde,fecha_pago:fecha},'id=eq.'+r.id);
+        porCubrir-=pendEsteRet;
+      }else{
+        await PATCH('retardos',{minutos_cubiertos:(r.minutos_cubiertos||0)+porCubrir},'id=eq.'+r.id);
+        porCubrir=0;
+      }
+    }
+    // Guardar en historial
+    await POST('historial_saldos',{empleado_clave:emp.clave,empleado_nombre:emp.nombre,tienda:tiendaActual,fecha,tipo:'pago',minutos:saldoCubierto,descripcion:'Saldo cubierto al quedarse después de salida'});
+  }
+
+  // 2. Descontar 15 min de gracia (solo si ya cubrió el saldo)
+  if(minRestantes>0){
+    if(minRestantes<15){
+      // No llega al umbral de extras
+      minRestantes=0;
+    }else{
+      // 15 min o más → TODOS cuentan como extras
+      minutosExtras=minRestantes;
+      minRestantes=0;
+    }
+  }
+
+  // 3. Guardar extras si los hay
+  if(minutosExtras>0){
+    await POST('extras_detalle',{empleado_clave:emp.clave,empleado_nombre:emp.nombre,tienda:tiendaActual,fecha,minutos:minutosExtras,tipo:'extra'});
+    await POST('historial_saldos',{empleado_clave:emp.clave,empleado_nombre:emp.nombre,tienda:tiendaActual,fecha,tipo:'extra',minutos:minutosExtras,descripcion:'Horas extra (≥15 min después de salida'+(saldoCubierto>0?' + saldo cubierto':'')+')'});
+    const ac=await GET('acumulados','select=*&empleado_clave=eq.'+emp.clave);
+    if(ac.length)await PATCH('acumulados',{minutos_extras:ac[0].minutos_extras+minutosExtras,updated_at:new Date().toISOString()},'empleado_clave=eq.'+emp.clave);
+    else await POST('acumulados',{empleado_clave:emp.clave,empleado_nombre:emp.nombre,tienda:tiendaActual,minutos_extras:minutosExtras,minutos_comida_exceso:0});
+  }
+
+  return{saldoCubierto,minutosExtras};
+}
+async function verificarExcesoComida(emp,horaRegreso){
+  const f=horaRegreso.toLocaleDateString('sv');
+  const salidas=await GET('registros','select=*&empleado=eq.'+encodeURIComponent(emp.nombre)+'&tienda=eq.'+tiendaActual+'&tipo=eq.salida-comida&ts=gte.'+f+'T00:00:00&order=ts.desc&limit=1');
+  if(!salidas.length)return;
+  const diffMin=Math.round((horaRegreso-new Date(salidas[0].ts))/60000);
+  const limMin=emp.minutos_comida||60;
+  const exceso=diffMin-limMin;
+  if(exceso<=0)return;
+  // Guardar detalle del día
+  await POST('extras_detalle',{empleado_clave:emp.clave,empleado_nombre:emp.nombre,tienda:tiendaActual,fecha:f,minutos:exceso,tipo:'comida'});
+  // Crear alerta visible en sanciones
+  await POST('alertas_comida',{empleado_clave:emp.clave,empleado_nombre:emp.nombre,tienda:tiendaActual,fecha:f,minutos_exceso:exceso,tiempo_permitido:limMin,tiempo_tomado:diffMin,vista:false});
+  // Actualizar acumulado
+  const ac=await GET('acumulados','select=*&empleado_clave=eq.'+emp.clave);
+  if(ac.length)await PATCH('acumulados',{minutos_comida_exceso:ac[0].minutos_comida_exceso+exceso,updated_at:new Date().toISOString()},'empleado_clave=eq.'+emp.clave);
+  else await POST('acumulados',{empleado_clave:emp.clave,empleado_nombre:emp.nombre,tienda:tiendaActual,minutos_extras:0,minutos_comida_exceso:exceso});
+}
+function mostrarResultado(icono,titulo,hora,sub,tipo,sancion){
+  document.getElementById('res-icono').textContent=icono;document.getElementById('res-titulo').textContent=titulo;document.getElementById('res-titulo').style.color=tipo==='ok'?'var(--green)':tipo==='warn'?'var(--amber)':'var(--red)';document.getElementById('res-hora').textContent=hora;document.getElementById('res-sub').textContent=sub;
+  const sd=document.getElementById('res-sancion');if(sancion){sd.style.display='block';document.getElementById('res-sancion-det').textContent='Retardos esta semana: '+sancion.retardos;}else sd.style.display='none';
+  document.getElementById('panel-resultado').classList.add('open');setTimeout(()=>{if(document.getElementById('panel-resultado').classList.contains('open'))cerrarResultado();},6000);
+}
+function cerrarResultado(){document.getElementById('panel-resultado').classList.remove('open');_tipoGuardado='';}
+const bCls={'entrada':'badge-entrada','salida':'badge-salida','entrada-comida':'badge-ent-com','salida-comida':'badge-sal-com'};
+async function cargarHoy(){
+  const tb=document.getElementById('tbody-hoy');
+  if(!tiendaActual){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text3)">Selecciona una sucursal.</td></tr>';return;}
+  const f=hoy();
+  try{
+    const regs=await GET('registros','select=*&tienda=eq.'+tiendaActual+'&ts=gte.'+f+'T00:00:00&ts=lte.'+f+'T23:59:59&order=ts.desc');
+    if(!regs.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text3)">Sin registros hoy.</td></tr>';return;}
+    tb.innerHTML=regs.map(r=>'<tr><td style="color:var(--text);font-weight:600">'+r.empleado+(r.es_visita?'<span class="badge-visita">visita</span>':'')+'</td><td><span class="badge '+(bCls[r.tipo]||'')+'">'+r.tipo.replace(/-/g,' ')+'</span></td><td>'+(r.estado_huella==='completo'?'<span style="color:var(--green)">✅</span>':'<span style="color:var(--amber)">⚠️</span>')+'</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text2)">'+fmtH(r.ts)+'</td></tr>').join('');
+  }catch{tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--red);padding:1rem">Error al cargar.</td></tr>';}
+}
+async function consultarMisTiempos(){
+  const claveV=document.getElementById('inp-clave-ret').value.trim(),desde=document.getElementById('ret-desde').value,hasta=document.getElementById('ret-hasta').value;
+  const msg=document.getElementById('mis-ret-msg'),res=document.getElementById('mis-tiempos-res');
+  if(!claveV){msg.textContent='Ingresa tu clave numérica.';msg.style.color='var(--amber)';msg.style.display='block';return;}
+  msg.style.display='none';res.style.display='none';
+  try{
+    const emps=await GET('empleados','select=*&clave=eq.'+claveV+'&limit=1');
+    if(!emps.length){msg.textContent='Clave no encontrada.';msg.style.color='var(--red)';msg.style.display='block';return;}
+    const semana=lunesStr(0);
+    const [retSemana,sancs,acums,retSaldo,historial]=await Promise.all([
+      GET('retardos','select=*&empleado_clave=eq.'+claveV+'&semana_inicio=eq.'+semana+'&order=fecha.desc'),
+      GET('sanciones','select=*&empleado_clave=eq.'+claveV+'&cumplida=eq.false'),
+      GET('acumulados','select=*&empleado_clave=eq.'+claveV),
+      GET('retardos','select=*&empleado_clave=eq.'+claveV+'&saldo_pagado=eq.false&order=fecha.asc'),
+      GET('historial_saldos','select=*&empleado_clave=eq.'+claveV+'&order=fecha.desc&limit=60')
+    ]);
+    const ac=acums[0]||{minutos_extras:0,minutos_comida_exceso:0};
+    const totalSaldo=retSaldo.reduce((a,r)=>a+(r.minutos_tarde-(r.minutos_cubiertos||0)),0);
+    // Stats
+    document.getElementById('mt-retardos').textContent=retSemana.length;
+    document.getElementById('mt-comida').textContent=ac.minutos_comida_exceso+' min';
+    const hE=Math.floor(ac.minutos_extras/60),mE=ac.minutos_extras%60;
+    document.getElementById('mt-extras').textContent=(hE>0?hE+'h ':'')+mE+' min';
+    // Saldo box
+    const saldoBox=document.getElementById('mt-saldo-box');
+    if(totalSaldo>0){
+      saldoBox.style.display='block';
+      document.getElementById('mt-saldo-min').textContent=totalSaldo+' min ('+Math.floor(totalSaldo/60)+'h '+totalSaldo%60+'min) — '+retSaldo.length+' retardo(s) sin saldar';
+    }else{saldoBox.style.display='none';}
+    // Alerta sanciones
+    document.getElementById('mt-sanc-alert').style.display=sancs.length?'flex':'none';
+    if(sancs.length)document.getElementById('mt-sanc-txt').textContent=sancs.length+' sanción(es) — Mañana quedarse apertura a cierre';
+    res.style.display='block';
+    // Detalle retardos con estado saldo
+    let retRows='';
+    let retFiltro=[];
+    let pRet='select=*&empleado_clave=eq.'+claveV+'&order=fecha.desc&limit=200';
+    if(desde)pRet+='&fecha=gte.'+desde;if(hasta)pRet+='&fecha=lte.'+hasta;
+    retFiltro=await GET('retardos',pRet);
+    retRows=retFiltro.length?retFiltro.map(r=>{
+      const cubiertos=r.minutos_cubiertos||0;
+      const pendiente=r.minutos_tarde-cubiertos;
+      const estadoCol=r.saldo_pagado
+        ?'<span style="font-size:11px;color:var(--green);padding:1px 7px;background:var(--green-bg);border-radius:4px">✓ Pagado</span>'
+        :(cubiertos>0
+          ?'<span style="font-size:11px;color:var(--amber)">Parcial: '+cubiertos+'/'+r.minutos_tarde+' min</span>'
+          :'<span style="font-size:11px;color:var(--red)">Pendiente: '+pendiente+' min</span>');
+      return '<tr>'
+        +'<td style="color:var(--text)">'+fmtF(r.fecha+'T12:00:00')+'</td>'
+        +'<td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--elite-red);font-weight:600">'+r.hora_entrada+'</td>'
+        +'<td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text)">'+r.hora_limite+'</td>'
+        +'<td style="color:var(--red);font-weight:600">+'+r.minutos_tarde+' min</td>'
+        +'<td>'+estadoCol+'</td>'
+        +'</tr>';
+    }).join(''):'<tr><td colspan="5" style="color:var(--text3);padding:1rem;text-align:center">Sin retardos en el período.</td></tr>';
+    document.getElementById('tbody-mis-ret').innerHTML=retRows;
+    // Historial completo saldos + extras
+    let extRows='';
+    if(historial.length){
+      extRows='<tr><td colspan="3" style="padding:6px 0 4px"><div style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--elite-red);margin-bottom:6px">Historial de tiempos</div></td></tr>';
+      extRows+=historial.map(h=>{
+        const icon=h.tipo==='retardo'?'🔴':h.tipo==='pago'?'✅':'⭐';
+        const color=h.tipo==='retardo'?'var(--red)':h.tipo==='pago'?'var(--green)':'var(--green)';
+        const signo=h.tipo==='retardo'?'-':'+';
+        return '<tr>'
+          +'<td style="color:var(--text2);font-size:12px">'+icon+' '+fmtF(h.fecha+'T12:00:00')+'</td>'
+          +'<td style="color:'+color+';font-weight:700;font-size:12px">'+signo+h.minutos+' min</td>'
+          +'<td style="color:var(--text3);font-size:11px">'+( h.descripcion||'')+'</td>'
+          +'</tr>';
+      }).join('');
+    }
+    if(ac.minutos_comida_exceso>0){
+      extRows+='<tr><td style="color:var(--amber);font-weight:500">⚠️ Exceso comida acumulado</td>'
+        +'<td style="color:var(--amber);font-weight:600">'+ac.minutos_comida_exceso+' min</td>'
+        +'<td style="color:var(--text3)">Por pasarse del tiempo de comida</td></tr>';
+    }
+    // Alertas comida pendientes
+    const alertasCom=await GET('alertas_comida','select=*&empleado_clave=eq.'+claveV+'&vista=eq.false&order=created_at.desc');
+    if(alertasCom.length){
+      extRows+='<tr><td colspan="3" style="padding:.5rem 0"><div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:10px 14px">'
+        +'<div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:6px">⚠️ ALERTAS DE EXCESO DE COMIDA</div>'
+        +alertasCom.map(a=>'<div style="font-size:12px;color:#fff;margin-bottom:4px">'+fmtF(a.fecha+'T12:00:00')+' — Exceso: <strong style="color:var(--amber)">+'+a.minutos_exceso+' min</strong> (permitido: '+a.tiempo_permitido+'min, tomado: '+a.tiempo_tomado+'min)</div>').join('')
+        +'</div></td></tr>';
+    }
+    document.getElementById('tbody-mis-ext').innerHTML=extRows||'<tr><td colspan="3" style="color:var(--text3);padding:1rem;text-align:center">Sin historial de tiempos aún.</td></tr>';
+  }catch(e){msg.textContent='Error: '+e.message;msg.style.color='var(--red)';msg.style.display='block';}
+}
+document.getElementById('inp-clave-ret').addEventListener('keydown',e=>{if(e.key==='Enter')consultarMisTiempos();});
+function renderCal(cid,offset){const l=lunesDe();l.setDate(l.getDate()+offset*7);const c=document.getElementById(cid);if(!c)return;const hs=hoy();let h='';for(let i=0;i<7;i++){const d=new Date(l);d.setDate(d.getDate()+i);h+=`<div class="cal-dia${d.toLocaleDateString('sv')===hs?' hoy':''}"><div class="dia-nom">${DIAS_NOM[d.getDay()]}</div><div class="dia-num">${d.getDate()}</div></div>`;}c.innerHTML=h;}
+function navSemana(dir){semanaOffset+=dir;renderCal('cal-dias',semanaOffset);document.getElementById('lbl-semana').textContent=fmtSemana(semanaOffset);if(tiendaActual)cargarHorariosVista(tiendaActual,semanaOffset);}
+function navSemanaEnc(dir){semanaEncOffset+=dir;renderCal('cal-dias-enc',semanaEncOffset);document.getElementById('lbl-semana-enc').textContent=fmtSemana(semanaEncOffset);cargarEditorHorarios();}
+function navSemanaAdmin(dir){semanaAdminOffset+=dir;renderCal('cal-dias-admin',semanaAdminOffset);document.getElementById('lbl-semana-admin').textContent=fmtSemana(semanaAdminOffset);renderHorariosAdmin();}
+async function cargarHorariosVista(tienda,offset){
+  const el=document.getElementById('cal-empleados'),semana=lunesStr(offset);
+  el.innerHTML='<div style="font-size:13px;color:var(--text3)">Cargando...</div>';
+  try{
+    const emps=await GET('empleados','select=*&tienda=eq.'+tienda+'&order=nombre');
+    if(!emps.length){el.innerHTML='<div style="font-size:13px;color:var(--text3)">Sin empleados.</div>';return;}
+    const hors=await GET('horarios_semana','select=*&tienda=eq.'+tienda+'&semana_inicio=eq.'+semana);
+    const horMap={};hors.forEach(h=>horMap[h.empleado_clave]=h);
+    el.innerHTML=emps.map(e=>{const h=horMap[e.clave],hora=h?h.hora_entrada:(e.hora_limite||'09:30'),horaS=e.hora_salida||'19:30',desc=h?h.dia_descanso:(e.dia_descanso||'domingo');
+      return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:6px"><span style="color:var(--text);font-weight:600;font-size:13px">${e.nombre}</span><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="descanso-badge" style="background:#eff6ff;color:var(--cyan);border:1px solid rgba(3,105,161,0.25)">▶ ${hora}</span><span class="descanso-badge" style="background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.3)">◀ ${horaS}</span><span class="descanso-badge d-${desc}">🛌 ${desc}</span><span class="descanso-badge" style="background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.3)">🍽 ${e.minutos_comida||60}min</span></div></div>`;
+    }).join('');
+  }catch{el.innerHTML='<div style="font-size:13px;color:var(--red)">Error.</div>';}
+}
+async function cargarEditorHorarios(){
+  const tienda=tiendaEncargado||document.getElementById('fh-tienda')?.value;
+  const semana=lunesStr(tiendaEncargado?semanaEncOffset:semanaAdminOffset);
+  const el=document.getElementById(tiendaEncargado?'enc-tabla-horarios':'admin-tabla-horarios');
+  if(!el)return;
+  el.innerHTML='<div style="font-size:13px;color:var(--text3)">Cargando...</div>';horariosEditados={};
+  try{
+    const [emps,hors,turnos]=await Promise.all([
+      GET('empleados','select=*&tienda=eq.'+tienda+'&order=nombre'),
+      GET('horarios_semana','select=*&tienda=eq.'+tienda+'&semana_inicio=eq.'+semana),
+      GET('horarios_permitidos','select=*&tienda=eq.'+tienda+'&order=turno')
+    ]);
+    if(!emps.length){el.innerHTML='<div style="font-size:13px;color:var(--text3)">Sin empleados.</div>';return;}
+    const horMap={};hors.forEach(h=>horMap[h.empleado_clave]=h);
+    emps.forEach(e=>{
+      const h=horMap[e.clave];
+      horariosEditados[e.clave]={
+        hora_entrada:h?h.hora_entrada:(e.hora_limite||'09:30'),
+        hora_salida:h?h.hora_salida:(e.hora_salida||'19:30'),
+        minutos_comida:h?h.minutos_comida:(e.minutos_comida||60),
+        dia_descanso:h?h.dia_descanso:(e.dia_descanso||'domingo'),
+        es_encargado_turno:h?h.es_encargado_turno:false,
+        nombre:e.nombre
+      };
+    });
+
+    el.innerHTML='<div style="overflow-x:auto"><table><thead><tr>'
+      +'<th>Empleado</th><th>Turno / Horario</th><th>Tiempo comida</th><th>Día descanso</th>'
+      +'</tr></thead><tbody>'
+      +emps.map(e=>{
+        const h=horariosEditados[e.clave];
+        const esApertura=h.es_encargado_turno||h.hora_entrada==='09:00'&&h.hora_salida==='21:00';
+        const esInventario=h.hora_entrada==='00:00'&&h.hora_salida==='23:59';
+        const opcTurnos=turnos.map(t=>{
+          const v=t.hora_entrada+'|'+t.hora_salida+'|'+t.minutos_comida+'|'+(t.turno==='Apertura a Cierre'?'1':'0')+'|'+(t.turno==='Inventario'?'1':'0');
+          const esApert=t.turno==='Apertura a Cierre';
+          const esInv=t.turno==='Inventario';
+          const sel=(esApertura&&esApert)||(esInventario&&esInv)||(!esApertura&&!esInventario&&h.hora_entrada===t.hora_entrada&&h.hora_salida===t.hora_salida&&!esApert&&!esInv)?'selected':'';
+          const label=esApert?'⭐ '+t.turno+' (Sin retardos ni sanciones)':esInv?'📦 '+t.turno+' (Solo registro de presencia)':t.turno+': '+t.hora_entrada+' – '+t.hora_salida;
+          return`<option value="${v}" ${sel}>${label}</option>`;
+        }).join('')+'<option value="custom|'+h.hora_entrada+'|'+h.hora_salida+'|'+h.minutos_comida+'|0|0">✏️ Personalizar horario...</option>';
+        return`<tr id="fila-${e.clave}">
+          <td style="color:var(--text);font-weight:600">${e.nombre}${e.encargado?'<span style="font-size:10px;color:var(--cyan);margin-left:6px">Enc.</span>':''}</td>
+          <td>
+            <select onchange="editHorarioTurno('${e.clave}',this.value)" style="width:auto;padding:6px 10px;min-width:260px">
+              ${opcTurnos}
+            </select>
+            <div id="info-turno-${e.clave}" style="font-size:11px;color:var(--text3);margin-top:4px">
+              ${esApertura
+                ?'<span style="color:var(--amber);font-weight:600">⭐ Apertura a Cierre — Sin retardos · Sin sanciones · Sin extras</span>'
+                :esInventario
+                ?'<span style="color:var(--cyan);font-weight:600">📦 Inventario — Solo registro · Sin retardos · Sin extras</span>'
+                :'Entrada: <strong style="color:var(--text)">'+h.hora_entrada+'</strong> · Salida: <strong style="color:var(--text)">'+h.hora_salida+'</strong>'}
+            </div>
+            <!-- Panel horario personalizado -->
+            <div id="panel-custom-${e.clave}" style="display:none;margin-top:8px;padding:12px;background:#fffbeb;border:1px solid rgba(180,83,9,0.25);border-radius:var(--radius-sm)">
+              <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:8px">✏️ HORARIO PERSONALIZADO</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end">
+                <div>
+                  <div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:4px">ENTRADA</div>
+                  <input type="time" id="custom-ent-${e.clave}" value="${h.hora_entrada}" style="padding:6px 10px;font-size:13px">
+                </div>
+                <div>
+                  <div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:4px">SALIDA</div>
+                  <input type="time" id="custom-sal-${e.clave}" value="${h.hora_salida}" style="padding:6px 10px;font-size:13px">
+                </div>
+                <div>
+                  <div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:4px">COMIDA</div>
+                  <select id="custom-com-${e.clave}" style="padding:6px 10px;font-size:12px">
+                    <option value="60" ${h.minutos_comida===60?'selected':''}>1 hora</option>
+                    <option value="90" ${h.minutos_comida===90?'selected':''}>1:30 hrs</option>
+                    <option value="120" ${h.minutos_comida===120?'selected':''}>2 horas</option>
+                  </select>
+                </div>
+                <button onclick="aplicarHorarioPersonalizado('${e.clave}')" class="btn-primary" style="font-size:12px;padding:6px 12px;white-space:nowrap">✓ Aplicar</button>
+              </div>
+            </div>
+            <div style="margin-top:6px">
+              <button id="btn-ci-${e.clave}" onclick="toggleCambioTurnoInline('${e.clave}')" style="font-size:11px;padding:3px 10px;color:var(--cyan);border-color:rgba(3,105,161,0.3);background:var(--cyan-bg);box-shadow:none">
+                🔄 Cambio temporal
+              </button>
+              <div id="cambio-inline-${e.clave}" style="display:none;margin-top:8px;padding:12px;background:var(--bg3);border-radius:var(--radius-sm);border:1px solid var(--border)">
+                <div style="font-size:11px;font-weight:700;color:var(--elite-red);margin-bottom:8px">CAMBIO TEMPORAL — ${e.nombre}</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+                  <div>
+                    <div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:4px">TURNO TEMPORAL</div>
+                    <select id="ci-turno-${e.clave}" style="padding:6px 10px;font-size:12px">${opcTurnos}</select>
+                  </div>
+                  <div>
+                    <div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:4px">DESDE</div>
+                    <input type="date" id="ci-desde-${e.clave}" value="${hoy()}" style="padding:6px 10px;font-size:12px">
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+                  <div>
+                    <div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:4px">DURACIÓN</div>
+                    <select id="ci-dur-${e.clave}" style="padding:6px 10px;font-size:12px">
+                      <option value="1dia">1 día</option>
+                      <option value="semana">1 semana</option>
+                      <option value="mes">1 mes</option>
+                      <option value="indefinido">Indefinido</option>
+                    </select>
+                  </div>
+                  <div>
+                    <div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:4px">MOTIVO</div>
+                    <select id="ci-motivo-${e.clave}" style="padding:6px 10px;font-size:12px">
+                      <option>Rolar turno</option>
+                      <option>Suplente de encargado</option>
+                      <option>Inventario nocturno</option>
+                      <option>Acuerdo entre empleados</option>
+                      <option>Indicación de administración</option>
+                      <option>Corrección del mismo día</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="font-size:11px;color:var(--amber);margin-bottom:8px;padding:6px 10px;background:var(--amber-bg);border-radius:6px">
+                  ⚠️ Si aplicas para hoy y hay retardos registrados, se cancelarán automáticamente.
+                </div>
+                <div style="display:flex;gap:8px">
+                  <button class="btn-primary" onclick="aplicarCambioTurnoInline('${e.clave}','${e.nombre.replace(/'/g,"\\'")}','${tienda}')" style="font-size:12px;padding:6px 14px">✓ Aplicar</button>
+                  <button onclick="toggleCambioTurnoInline('${e.clave}')" style="font-size:12px;padding:6px 12px">Cancelar</button>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <select id="comida-${e.clave}" onchange="editHorario('${e.clave}','minutos_comida',parseInt(this.value))" style="width:auto;padding:6px 10px;min-width:120px">
+              <option value="60" ${h.minutos_comida===60?'selected':''}>1 hora</option>
+              <option value="90" ${h.minutos_comida===90?'selected':''}>1:30 hrs</option>
+              <option value="120" ${h.minutos_comida===120?'selected':''}>2 horas</option>
+            </select>
+          </td>
+          <td>
+            <select onchange="editHorario('${e.clave}','dia_descanso',this.value)" style="width:auto;padding:6px 10px">
+              ${DIAS_FULL.map(d=>`<option value="${d}"${h.dia_descanso===d?' selected':''}>${d.charAt(0).toUpperCase()+d.slice(1)}</option>`).join('')}
+            </select>
+          </td>
+        </tr>`;
+      }).join('')
+      +'</tbody></table></div>';
+  }catch(e){el.innerHTML='<div style="color:var(--red);font-size:13px">Error: '+e.message+'</div>';}
+}
+function editHorarioTurno(clave,valor){
+  const parts=valor.split('|');
+  if(parts[0]==='custom'){
+    const panel=document.getElementById('panel-custom-'+clave);
+    if(panel)panel.style.display=panel.style.display==='none'?'block':'none';
+    return;
+  }
+  const hora_entrada=parts[0],hora_salida=parts[1],minutos_comida=parseInt(parts[2]),esApertura=parts[3]==='1',esInventario=(parts[4]||'0')==='1';
+  if(!horariosEditados[clave])horariosEditados[clave]={};
+  horariosEditados[clave].hora_entrada=hora_entrada;
+  horariosEditados[clave].hora_salida=hora_salida;
+  horariosEditados[clave].minutos_comida=minutos_comida;
+  horariosEditados[clave].es_encargado_turno=esApertura;
+  horariosEditados[clave]._turno_inventario=esInventario;
+  const panel=document.getElementById('panel-custom-'+clave);
+  if(panel)panel.style.display='none';
+  const infoEl=document.getElementById('info-turno-'+clave);
+  if(infoEl)infoEl.innerHTML=esApertura
+    ?'<span style="color:var(--amber);font-weight:600">⭐ Apertura a Cierre — Sin retardos · Sin sanciones · Sin extras</span>'
+    :esInventario
+    ?'<span style="color:var(--cyan);font-weight:600">📦 Inventario — Solo registro · Sin retardos · Sin extras</span>'
+    :'Entrada: <strong style="color:var(--text)">'+hora_entrada+'</strong> · Salida: <strong style="color:var(--text)">'+hora_salida+'</strong>';
+}
+function aplicarHorarioPersonalizado(clave){
+  const ent=document.getElementById('custom-ent-'+clave)?.value;
+  const sal=document.getElementById('custom-sal-'+clave)?.value;
+  const com=parseInt(document.getElementById('custom-com-'+clave)?.value||60);
+  if(!ent||!sal){alert('Ingresa hora de entrada y salida');return;}
+  if(!horariosEditados[clave])horariosEditados[clave]={};
+  horariosEditados[clave].hora_entrada=ent;
+  horariosEditados[clave].hora_salida=sal;
+  horariosEditados[clave].minutos_comida=com;
+  horariosEditados[clave].es_encargado_turno=false;
+  horariosEditados[clave]._turno_inventario=false;
+  const panel=document.getElementById('panel-custom-'+clave);
+  if(panel)panel.style.display='none';
+  const infoEl=document.getElementById('info-turno-'+clave);
+  if(infoEl)infoEl.innerHTML='✏️ Personalizado — Entrada: <strong style="color:var(--text)">'+ent+'</strong> · Salida: <strong style="color:var(--text)">'+sal+'</strong>';
+}
+function editHorario(clave,campo,valor){if(!horariosEditados[clave])horariosEditados[clave]={};horariosEditados[clave][campo]=valor;}
+async function guardarHorarios(){
+  const tienda=tiendaEncargado||document.getElementById('fh-tienda').value;
+  const semana=lunesStr(tiendaEncargado?semanaEncOffset:semanaAdminOffset);
+  if(!Object.keys(horariosEditados).length){showEncMsg('Sin cambios.','amber');return;}
+  try{
+    for(const clave of Object.keys(horariosEditados)){
+      const h=horariosEditados[clave];
+      await DEL('horarios_semana','tienda=eq.'+tienda+'&empleado_clave=eq.'+clave+'&semana_inicio=eq.'+semana);
+      await POST('horarios_semana',{
+        tienda,
+        empleado_clave:clave,
+        empleado_nombre:h.nombre||'',
+        semana_inicio:semana,
+        hora_entrada:h.hora_entrada,
+        hora_salida:h.hora_salida||'19:30',
+        minutos_comida:h.minutos_comida||60,
+        dia_descanso:h.dia_descanso||'domingo',
+        es_encargado_turno:h.es_encargado_turno||false
+      });
+      // Actualizar también en la tabla empleados para que quede como default
+      await PATCH('empleados',{hora_limite:h.hora_entrada,hora_salida:h.hora_salida,minutos_comida:h.minutos_comida},'clave=eq.'+clave);
+    }
+    showEncMsg('✓ Horarios guardados — '+fmtSemana(tiendaEncargado?semanaEncOffset:semanaAdminOffset),'green');
+    if(tiendaActual===tienda)cargarHorariosVista(tienda,semanaOffset);
+  }catch(e){showEncMsg('Error: '+e.message,'red');}
+}
+async function guardarHorariosAdmin(){await guardarHorarios();}
+function showEncMsg(txt,color){['enc-msg','admin-hor-msg'].forEach(id=>{const m=document.getElementById(id);if(!m)return;m.textContent=txt;m.style.color=color==='green'?'var(--green)':color==='red'?'var(--red)':'var(--amber)';m.style.display='block';setTimeout(()=>m.style.display='none',3500);});}
+async function copiarSemanaAnterior(){const tienda=tiendaEncargado;try{const hors=await GET('horarios_semana','select=*&tienda=eq.'+tienda+'&semana_inicio=eq.'+lunesStr(semanaEncOffset-1));if(!hors.length){showEncMsg('No hay horarios la semana anterior.','amber');return;}hors.forEach(h=>{if(!horariosEditados[h.empleado_clave])horariosEditados[h.empleado_clave]={nombre:h.empleado_nombre};horariosEditados[h.empleado_clave].hora_entrada=h.hora_entrada;horariosEditados[h.empleado_clave].dia_descanso=h.dia_descanso;});await cargarEditorHorarios();showEncMsg('✓ Copiado. Guarda para confirmar.','green');}catch(e){showEncMsg('Error: '+e.message,'red');}}
+async function copiarSemanaAdmin(){const tienda=document.getElementById('fh-tienda').value;if(!tienda)return;tiendaEncargado=tienda;semanaEncOffset=semanaAdminOffset;await copiarSemanaAnterior();tiendaEncargado='';}
+async function renderHorariosAdmin(){
+  const tienda=document.getElementById('fh-tienda').value;
+  if(!tienda)return;
+  tiendaEncargado=tienda;
+  semanaEncOffset=semanaAdminOffset;
+  await cargarEditorHorarios();
+  tiendaEncargado='';
+}
+async function cargarRetardosEnc(){
+  const desde=document.getElementById('enc-ret-desde').value||lunesStr(0),hasta=document.getElementById('enc-ret-hasta').value||hoy();
+  const tb=document.getElementById('tbody-ret-enc');tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:1rem;color:var(--text3)">Cargando...</td></tr>';
+  try{const rets=await GET('retardos','select=*&tienda=eq.'+tiendaEncargado+'&fecha=gte.'+desde+'&fecha=lte.'+hasta+'&order=fecha.desc&limit=500');if(!rets.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text3)">Sin retardos.</td></tr>';return;}tb.innerHTML=rets.map(r=>'<tr><td style="color:#fff">'+fmtF(r.fecha+'T12:00:00')+'</td><td style="color:var(--text);font-weight:500">'+r.empleado_nombre+'</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--elite-red);font-weight:600">'+r.hora_entrada+'</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text)">'+r.hora_limite+'</td><td><span style="color:var(--red);font-weight:600">+'+r.minutos_tarde+' min</span></td><td style="font-size:11px;color:var(--text3)">'+fmtF(r.semana_inicio+'T12:00:00')+'</td></tr>').join('');}catch{tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--red);padding:1rem">Error.</td></tr>';}
+}
+async function renderHistorial(){
+  const tienda=document.getElementById('f-tienda').value,fecha=document.getElementById('f-fecha').value||hoy();
+  const tb=document.getElementById('tbody-hist');tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:1rem;color:var(--text3)">Cargando...</td></tr>';
+  let p='select=*&ts=gte.'+fecha+'T00:00:00&ts=lte.'+fecha+'T23:59:59&order=ts.desc&limit=500';if(tienda)p+='&tienda=eq.'+tienda;
+  try{const regs=await GET('registros',p);if(!regs.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text3)">Sin registros.</td></tr>';return;}tb.innerHTML=regs.map(r=>'<tr><td style="color:var(--text2)">'+fmtF(r.ts)+'</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text2)">'+fmtH(r.ts)+'</td><td style="color:var(--text);font-weight:500">'+nomT(r.tienda)+'</td><td style="color:var(--text);font-weight:600">'+r.empleado+(r.es_visita?'<span class="badge-visita">visita</span>':'')+'</td><td><span class="badge '+(bCls[r.tipo]||'')+'">'+r.tipo.replace(/-/g,' ')+'</span></td><td>'+(r.estado_huella==='completo'?'<span style="color:var(--green)">✅ Completo</span>':'<span style="color:var(--amber)">⚠️ Incompleto</span>')+'</td></tr>').join('');}catch{tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--red);padding:1rem">Error.</td></tr>';}
+}
+function limpiarFiltros(){document.getElementById('f-tienda').value='';document.getElementById('f-fecha').value=hoy();renderHistorial();}
+async function renderRetardos(){
+  const selTienda=document.getElementById('fr-tienda');
+  const tienda=selTienda?selTienda.value:'';
+  const desde=document.getElementById('fr-desde').value||lunesStr(0);
+  const hasta=document.getElementById('fr-hasta').value||hoy();
+  const tb=document.getElementById('tbody-ret');
+  tb.innerHTML='<tr><td colspan="10" style="text-align:center;padding:1rem;color:var(--text3)">Cargando...</td></tr>';
+  // Construir query con filtros en orden correcto para Supabase
+  let p='select=*&order=fecha.desc&limit=500';
+  p+='&fecha=gte.'+desde+'&fecha=lte.'+hasta;
+  if(tienda&&tienda!=='')p+='&tienda=eq.'+tienda;
+  try{
+    const rets=await GET('retardos',p);
+    if(!rets.length){
+      const msgFiltro=tienda?'Sin retardos para '+nomT(tienda)+' en el período.':'Sin retardos en el período.';
+      tb.innerHTML='<tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--text3)">'+msgFiltro+'</td></tr>';
+      return;
+    }
+    tb.innerHTML=rets.map(r=>{
+      const saldoCol=r.saldo_pagado
+        ?'<span style="font-size:11px;color:var(--green);padding:2px 8px;background:var(--green-bg);border-radius:4px">✓ Pagado</span>'
+        :'<span style="color:var(--amber);font-weight:600">'+r.minutos_tarde+' min</span>';
+      return '<tr>'
+        +'<td style="color:var(--text)">'+fmtF(r.fecha+'T12:00:00')+'</td>'
+        +'<td style="color:var(--text);font-weight:500">'+nomT(r.tienda)+'</td>'
+        +'<td style="color:var(--text);font-weight:600">'+r.empleado_nombre+'</td>'
+        +'<td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--elite-red);font-weight:600">'+r.hora_entrada+'</td>'
+        +'<td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text)">'+r.hora_limite+'</td>'
+        +'<td><span style="color:var(--red);font-weight:700">+'+r.minutos_tarde+' min</span></td>'
+        +'<td>'+saldoCol+'</td>'
+        +'<td style="font-size:11px;color:var(--text3)">'+fmtF(r.semana_inicio+'T12:00:00')+'</td>'
+        +'<td class="no-print">'
+        +(!r.saldo_pagado?'<button class="btn-success" onclick="marcarSaldoPagado(\''+r.id+'\')">✓ Pagado</button>':'')
+        +'</td>'
+        +'<td class="no-print"><button class="btn-danger" onclick="borrarRetardo(\''+r.id+'\')">Borrar</button></td>'
+        +'</tr>';
+    }).join('');
+  }catch(e){tb.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--red);padding:1rem">Error: '+e.message+'</td></tr>';}
+}
+async function marcarSaldoPagado(id){
+  if(!confirm('¿Marcar saldo como pagado?'))return;
+  try{
+    await PATCH('retardos',{saldo_pagado:true,fecha_pago:hoy()},'id=eq.'+id);
+    renderRetardos();
+  }catch(e){alert('Error: '+e.message);}
+}
+async function borrarRetardo(id){if(!confirm('¿Borrar este retardo?'))return;try{await DEL('retardos','id=eq.'+id);renderRetardos();}catch(e){alert('Error: '+e.message);}}
+async function renderExtras(){
+  const tb=document.getElementById('tbody-extras');
+  const tiendaFiltro=document.getElementById('fex-tienda')?.value||'';
+  tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:1rem;color:var(--text3)">Cargando...</td></tr>';
+  try{
+    let p='select=*&order=empleado_nombre';
+    if(tiendaFiltro)p+='&tienda=eq.'+tiendaFiltro;
+    const ac=await GET('acumulados',p);
+    if(!ac.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text3)">Sin acumulados.</td></tr>';return;}
+    const hE=a=>Math.floor(a.minutos_extras/60),mE=a=>a.minutos_extras%60;
+    tb.innerHTML=ac.map(a=>`
+      <tr id="row-${a.id}">
+        <td style="color:#fff">${nomT(a.tienda)}</td>
+        <td style="color:var(--text);font-weight:600">${a.empleado_nombre}</td>
+        <td style="color:var(--green);font-weight:600">${hE(a)>0?hE(a)+'h ':''} ${mE(a)} min
+          <button onclick="toggleDetalle('${a.id}','${a.empleado_clave}','extra')" style="font-size:10px;padding:2px 6px;margin-left:6px;color:var(--green);border-color:rgba(52,211,153,.4);background:transparent">▸ ver días</button>
+        </td>
+        <td style="color:var(--amber);font-weight:600">${a.minutos_comida_exceso} min
+          <button onclick="toggleDetalle('${a.id}','${a.empleado_clave}','comida')" style="font-size:10px;padding:2px 6px;margin-left:6px;color:var(--amber);border-color:rgba(251,191,36,.4);background:transparent">▸ ver días</button>
+        </td>
+        <td class="no-print"><button class="btn-warn" onclick="abrirAcum('${a.id}','minutos_extras',${a.minutos_extras},'${a.empleado_nombre}')">✏️ Extras</button></td>
+        <td class="no-print"><button class="btn-warn" onclick="abrirAcum('${a.id}','minutos_comida_exceso',${a.minutos_comida_exceso},'${a.empleado_nombre}')">✏️ Comida</button></td>
+        <td class="no-print"><button class="btn-danger" onclick="resetAcum('${a.id}','${a.empleado_nombre}','${a.empleado_clave}')">Reset</button></td>
+      </tr>
+      <tr id="det-${a.id}" style="display:none">
+        <td colspan="7" style="padding:0">
+          <div id="det-body-${a.id}" style="padding:.75rem 1.25rem;background:var(--bg3);border-top:1px solid var(--border)">Cargando...</div>
+        </td>
+      </tr>`).join('');
+  }catch{tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--red);padding:1rem">Error.</td></tr>';}
+}
+async function toggleDetalle(acumId,claveV,tipo){
+  const row=document.getElementById('det-'+acumId);
+  const body=document.getElementById('det-body-'+acumId);
+  const visible=row.style.display!=='none'&&row.style.display!=='';
+  // Ocultar todos
+  document.querySelectorAll('tr[id^="det-"]').forEach(r=>r.style.display='none');
+  if(visible)return;
+  row.style.display='';
+  body.innerHTML='<span style="color:var(--text3);font-size:13px">Cargando...</span>';
+  try{
+    const dets=await GET('extras_detalle','select=*&empleado_clave=eq.'+claveV+'&tipo=eq.'+tipo+'&order=fecha.desc&limit=90');
+    if(!dets.length){
+      body.innerHTML='<div style="color:var(--text3);font-size:13px;padding:4px 0">'
+        +'Sin registros de detalle por día aún.<br>'
+        +'<span style="font-size:12px;color:var(--text3)">Los registros anteriores a esta actualización no tienen desglose por día. '
+        +'Los nuevos sí se guardarán automáticamente con fecha y minutos exactos.</span></div>';
+      return;
+    }
+    const color=tipo==='extra'?'var(--green)':'var(--amber)';
+    const etiqueta=tipo==='extra'?'Hora extra (≥15 min después de salida)':'Exceso de comida';
+    body.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px">'
+      +'<thead><tr>'
+      +'<th style="text-align:left;padding:5px 10px;color:var(--text3);font-size:11px;border-bottom:1px solid var(--border)">FECHA</th>'
+      +'<th style="text-align:left;padding:5px 10px;color:var(--text3);font-size:11px;border-bottom:1px solid var(--border)">MINUTOS ESE DÍA</th>'
+      +'<th style="text-align:left;padding:5px 10px;color:var(--text3);font-size:11px;border-bottom:1px solid var(--border)">HORAS</th>'
+      +'<th style="text-align:left;padding:5px 10px;color:var(--text3);font-size:11px;border-bottom:1px solid var(--border)">TIPO</th>'
+      +'</tr></thead><tbody>'
+      +dets.map(d=>{
+        const h=Math.floor(d.minutos/60),m=d.minutos%60;
+        const hStr=h>0?h+'h '+m+'min':m+' min';
+        return '<tr style="border-bottom:1px solid var(--border)">'
+          +'<td style="padding:6px 10px;color:var(--text)">'+fmtF(d.fecha+'T12:00:00')+'</td>'
+          +'<td style="padding:6px 10px;color:'+color+';font-weight:600">+'+d.minutos+' min</td>'
+          +'<td style="padding:6px 10px;color:'+color+'">'+hStr+'</td>'
+          +'<td style="padding:6px 10px;color:var(--text3);font-size:12px">'+etiqueta+'</td>'
+          +'</tr>';
+      }).join('')
+      +'</tbody></table>'
+      +'<div style="font-size:11px;color:var(--text3);margin-top:6px;padding:0 10px">Total: '+dets.length+' día(s) registrado(s)</div>';
+  }catch(e){body.innerHTML='<span style="color:var(--red);font-size:13px">Error: '+e.message+'</span>';}
+}
+function abrirAcum(id,campo,actual,nombre){document.getElementById('acum-id').value=id;document.getElementById('acum-campo').value=campo;document.getElementById('acum-titulo').textContent='Modificar '+(campo==='minutos_extras'?'horas extras':'exceso comida')+' — '+nombre;document.getElementById('acum-actual').textContent=actual+' min';document.getElementById('acum-nuevo').value=actual;document.getElementById('acum-msg').style.display='none';document.getElementById('modal-acum').classList.add('open');}
+async function guardarAcumulado(){const id=document.getElementById('acum-id').value,campo=document.getElementById('acum-campo').value,nuevo=parseInt(document.getElementById('acum-nuevo').value);if(isNaN(nuevo)||nuevo<0){document.getElementById('acum-msg').textContent='Valor inválido';document.getElementById('acum-msg').style.display='block';return;}try{await PATCH('acumulados',{[campo]:nuevo,updated_at:new Date().toISOString()},'id=eq.'+id);cerrarModal('modal-acum');renderExtras();}catch(e){document.getElementById('acum-msg').textContent='Error: '+e.message;document.getElementById('acum-msg').style.display='block';}}
+async function resetAcum(id,nombre,claveV){
+  if(!confirm('¿Resetear todos los acumulados de '+nombre+'?\nTambién se borrará el historial de detalle.'))return;
+  try{
+    await PATCH('acumulados',{minutos_extras:0,minutos_comida_exceso:0,updated_at:new Date().toISOString()},'id=eq.'+id);
+    await DEL('extras_detalle','empleado_clave=eq.'+claveV);
+    renderExtras();
+  }catch(e){alert('Error: '+e.message);}
+}
+async function renderSanciones(){
+  const el=document.getElementById('lista-sanciones');
+  const tiendaFiltro=document.getElementById('fsan-tienda')?.value||'';
+  el.innerHTML='<div style="font-size:13px;color:var(--text3)">Cargando...</div>';
+  try{
+    let pSanc='select=*&order=fecha_sancion.desc';
+    let pAlCom='select=*&order=created_at.desc&limit=100';
+    let pAlEnc='select=*&order=created_at.desc&limit=100';
+    if(tiendaFiltro){pSanc+='&tienda=eq.'+tiendaFiltro;pAlCom+='&tienda=eq.'+tiendaFiltro;pAlEnc+='&tienda=eq.'+tiendaFiltro;}
+    const [sancs,alertas,alertasEnc]=await Promise.all([
+      GET('sanciones',pSanc),
+      GET('alertas_comida',pAlCom),
+      GET('alertas_encargado',pAlEnc)
+    ]);
+    let html='';
+    // Alertas de encargado tarde
+    if(alertasEnc.length){
+      html+='<div style="font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;margin-top:4px">⚠️ Alertas — Encargado llegó tarde</div>';
+      html+='<div style="font-size:12px;color:var(--text2);margin-bottom:10px;background:var(--amber-bg);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:8px 12px">Considera si los retardos de los empleados ese día son justificados. Admin puede borrar los retardos afectados desde la pestaña ⏰ Retardos.</div>';
+      html+=alertasEnc.map(a=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap">'
+        +'<div><div style="font-weight:500;color:#fff">'+a.encargado_nombre
+        +(!a.gestionada?' <span style="font-size:10px;padding:1px 7px;border-radius:4px;background:var(--amber-bg);color:var(--amber);margin-left:6px">NUEVA</span>':'')
+        +'</div>'
+        +'<div style="font-size:12px;color:var(--text3)">'+nomT(a.tienda)+' · '+fmtF(a.fecha+'T12:00:00')+'</div>'
+        +'<div style="font-size:12px;color:var(--text2);margin-top:2px">Llegó <strong style="color:var(--amber)">+'+a.minutos_tarde+' min</strong> tarde</div>'
+        +'</div>'
+        +'<div style="display:flex;gap:6px" class="no-print">'
+        +(!a.gestionada?'<button class="btn-success" onclick="marcarEncGestionada(\''+a.id+'\')">✓ Gestionada</button>':'<span style="font-size:11px;color:var(--text3)">Gestionada</span>')
+        +'<button class="btn-danger" onclick="borrarAlertaEnc(\''+a.id+'\')">Borrar</button>'
+        +'</div></div>').join('');
+    }
+    // Sanciones por retardo
+    html+='<div style="font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;margin-top:'+(alertasEnc.length?'1.5rem':'4px')+'">⏰ Sanciones por retardo</div>';
+    if(sancs.length){
+      html+=sancs.map(s=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap">'
+        +'<div><div style="font-weight:500;color:#fff">'+s.empleado_nombre+'</div>'
+        +'<div style="font-size:12px;color:var(--text2)">'+nomT(s.tienda)+' · Semana del '+fmtF(s.semana_inicio+'T12:00:00')+'</div>'
+        +'<div style="font-size:12px;color:var(--text3);margin-top:2px">'+s.retardos_semana+' retardos — Mañana quedarse apertura a cierre</div></div>'
+        +'<div style="display:flex;gap:6px;align-items:center" class="no-print">'
+        +(s.cumplida
+          ?'<span style="font-size:11px;color:var(--green);padding:2px 8px;background:var(--green-bg);border-radius:4px">✓ Cumplida</span>'
+          :'<span style="font-size:11px;color:var(--red);padding:2px 8px;background:var(--red-bg);border-radius:4px">Pendiente</span>'
+          +'<button class="btn-success" onclick="marcarCumplida(\''+s.id+'\')">✓ Cumplida</button>')
+        +'<button class="btn-danger" onclick="borrarSancion(\''+s.id+'\')">Borrar</button>'
+        +'</div></div>').join('');
+    }else{
+      html+='<div style="font-size:13px;color:var(--text3);margin-bottom:1rem">Sin sanciones por retardo.</div>';
+    }
+    // Alertas de comida
+    html+='<div style="font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;margin-top:1.5rem">🍽 Alertas de exceso de comida</div>';
+    if(alertas.length){
+      html+=alertas.map(a=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap">'
+        +'<div><div style="font-weight:500;color:#fff">'+a.empleado_nombre
+        +(!a.vista?' <span style="font-size:10px;padding:1px 7px;border-radius:4px;background:var(--amber-bg);color:var(--amber);margin-left:6px">NUEVA</span>':'')
+        +'</div>'
+        +'<div style="font-size:12px;color:var(--text3)">'+nomT(a.tienda)+' · '+fmtF(a.fecha+'T12:00:00')+'</div>'
+        +'<div style="font-size:12px;color:var(--text2);margin-top:2px">'
+        +'Permitido: <strong style="color:#fff">'+a.tiempo_permitido+' min</strong> · '
+        +'Tomó: <strong style="color:var(--amber)">'+a.tiempo_tomado+' min</strong> · '
+        +'Exceso: <strong style="color:var(--red)">+'+a.minutos_exceso+' min</strong>'
+        +'</div></div>'
+        +'<div style="display:flex;gap:6px;align-items:center" class="no-print">'
+        +(!a.vista?'<button class="btn-success" onclick="marcarAlertaVista(\''+a.id+'\')">✓ Visto</button>':'<span style="font-size:11px;color:var(--text3)">Vista</span>')
+        +'<button class="btn-danger" onclick="borrarAlerta(\''+a.id+'\')">Borrar</button>'
+        +'</div></div>').join('');
+    }else{
+      html+='<div style="font-size:13px;color:var(--text3)">Sin alertas de exceso de comida.</div>';
+    }
+    el.innerHTML=html;
+  }catch(err){el.innerHTML='<div style="font-size:13px;color:var(--red)">Error: '+err.message+'</div>';}
+}
+async function marcarEncGestionada(id){try{await PATCH('alertas_encargado',{gestionada:true},'id=eq.'+id);renderSanciones();}catch(e){alert('Error: '+e.message);}}
+async function borrarAlertaEnc(id){if(!confirm('¿Borrar esta alerta?'))return;try{await DEL('alertas_encargado','id=eq.'+id);renderSanciones();}catch(e){alert('Error: '+e.message);}}
+async function marcarCumplida(id){if(!confirm('¿Marcar como cumplida?'))return;try{await PATCH('sanciones',{cumplida:true,fecha_cumplida:new Date().toISOString()},'id=eq.'+id);renderSanciones();}catch(e){alert('Error: '+e.message);}}
+async function borrarSancion(id){if(!confirm('¿Borrar esta sanción?'))return;try{await DEL('sanciones','id=eq.'+id);renderSanciones();}catch(e){alert('Error: '+e.message);}}
+async function renderCfgEmps(){
+  const num=document.getElementById('cfg-tienda').value,form=document.getElementById('cfg-form'),lista=document.getElementById('cfg-lista');
+  if(!num){form.style.display='none';lista.innerHTML='';return;}form.style.display='block';lista.innerHTML='<div style="color:var(--text3);font-size:13px">Cargando...</div>';
+  try{const emps=await GET('empleados','select=*&tienda=eq.'+num+'&order=nombre');if(!emps.length){lista.innerHTML='<div style="color:var(--text3);margin-bottom:8px;font-size:13px">Sin empleados.</div>';return;}lista.innerHTML=emps.map(e=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;gap:8px;flex-wrap:wrap"><span style="color:var(--text);font-weight:600">'+e.nombre+(e.puesto?' <span style="color:var(--text3);font-size:12px">('+e.puesto+')</span>':'')+(e.encargado?' <span style="font-size:10px;padding:1px 6px;border-radius:4px;background:var(--cyan-bg);color:var(--cyan);margin-left:4px">Enc.</span>':'')+' <span style="font-family:\'DM Mono\',monospace;font-size:11px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:2px 6px;margin-left:4px">'+e.clave+'</span><span style="font-size:11px;color:var(--text3)"> ▶'+(e.hora_limite||'09:30')+' ◀'+(e.hora_salida||'19:30')+' 🍽'+(e.minutos_comida||60)+'min</span></span><div style="display:flex;gap:6px" class="no-print"><button onclick="abrirEditar(\''+e.id+'\',\''+e.nombre+'\',\''+e.clave+'\',\''+(e.puesto||'')+'\',\''+(e.hora_limite||'09:30')+'\',\''+(e.hora_salida||'19:30')+'\',\''+(e.dia_descanso||'domingo')+'\','+(e.minutos_comida||60)+',\''+(e.clave_encargado||'')+'\')" style="font-size:11px;padding:2px 8px">✏️</button><button class="btn-danger" onclick="borrarEmp(\''+e.id+'\',\''+e.clave+'\',\''+e.nombre+'\')">Borrar</button></div></div>').join('');}catch{lista.innerHTML='<div style="color:var(--red);font-size:13px">Error.</div>';}
+}
+async function agregarEmp(){
+  const num=document.getElementById('cfg-tienda').value,nombre=document.getElementById('cfg-nombre').value.trim(),claveV=document.getElementById('cfg-clave').value.trim(),puesto=document.getElementById('cfg-puesto').value.trim(),horaEnt=document.getElementById('cfg-hora-entrada').value,horaSal=document.getElementById('cfg-hora-salida').value,descanso=document.getElementById('cfg-descanso').value,minCom=parseInt(document.getElementById('cfg-min-comida').value)||60,claveEnc=document.getElementById('cfg-clave-enc').value.trim(),encargado=document.getElementById('cfg-encargado').checked;
+  if(!nombre||!claveV){showMsg('Nombre y clave obligatorios.','red');return;}if(!/^\d+$/.test(claveV)){showMsg('La clave debe ser numérica.','red');return;}
+  try{await POST('empleados',{tienda:num,nombre,clave:claveV,puesto,hora_limite:horaEnt,hora_salida:horaSal,dia_descanso:descanso,minutos_comida:minCom,encargado,clave_encargado:claveEnc||null});['cfg-nombre','cfg-clave','cfg-puesto','cfg-clave-enc'].forEach(id=>document.getElementById(id).value='');document.getElementById('cfg-encargado').checked=false;showMsg('✓ '+nombre+' agregado.','green');renderCfgEmps();}
+  catch(e){if(e.message.includes('unique'))showMsg('Esa clave ya está en uso.','red');else showMsg('Error: '+e.message,'red');}
+}
+function abrirEditar(id,nombre,clave,puesto,horaEnt,horaSal,descanso,minCom,claveEnc){document.getElementById('edit-id').value=id;document.getElementById('edit-nombre').value=nombre;document.getElementById('edit-clave').value=clave;document.getElementById('edit-puesto').value=puesto||'';document.getElementById('edit-hora-entrada').value=horaEnt||'09:30';document.getElementById('edit-hora-salida').value=horaSal||'19:30';document.getElementById('edit-descanso').value=descanso||'domingo';document.getElementById('edit-min-comida').value=minCom||60;document.getElementById('edit-clave-enc').value=claveEnc||'';document.getElementById('edit-msg').style.display='none';document.getElementById('modal-editar').classList.add('open');}
+async function guardarEdicion(){
+  const id=document.getElementById('edit-id').value,nombre=document.getElementById('edit-nombre').value.trim(),claveV=document.getElementById('edit-clave').value.trim(),puesto=document.getElementById('edit-puesto').value.trim(),horaEnt=document.getElementById('edit-hora-entrada').value,horaSal=document.getElementById('edit-hora-salida').value,descanso=document.getElementById('edit-descanso').value,minCom=parseInt(document.getElementById('edit-min-comida').value)||60,claveEnc=document.getElementById('edit-clave-enc').value.trim(),msg=document.getElementById('edit-msg');
+  if(!nombre||!claveV){msg.textContent='Nombre y clave obligatorios.';msg.style.color='var(--red)';msg.style.display='block';return;}
+  try{await PATCH('empleados',{nombre,clave:claveV,puesto,hora_limite:horaEnt,hora_salida:horaSal,dia_descanso:descanso,minutos_comida:minCom,encargado:claveEnc.length>0,clave_encargado:claveEnc||null},'id=eq.'+id);cerrarModal('modal-editar');renderCfgEmps();}
+  catch(e){msg.textContent='Error: '+e.message;msg.style.color='var(--red)';msg.style.display='block';}
+}
+async function borrarEmp(id,claveV,nombre){if(!confirm('¿Borrar a '+nombre+'?'))return;try{await DEL('visitas','clave=eq.'+claveV);await DEL('empleados','id=eq.'+id);showMsg('✓ Eliminado.','green');renderCfgEmps();}catch{showMsg('Error.','red');}}
+function showMsg(txt,color){const m=document.getElementById('cfg-msg');m.textContent=txt;m.style.color=color==='green'?'var(--green)':'var(--red)';m.style.display='block';setTimeout(()=>m.style.display='none',3000);}
+async function renderVisitaEmps(){const origen=document.getElementById('v-origen').value,sel=document.getElementById('v-emp');sel.innerHTML='<option value="">— Empleado —</option>';if(!origen)return;poblarSelect('v-destino',false,origen);try{const emps=await GET('empleados','select=*&tienda=eq.'+origen+'&order=nombre');emps.forEach(e=>{const o=document.createElement('option');o.value=e.clave;o.textContent=e.nombre;sel.appendChild(o);});}catch{}}
+async function agregarVisita(){const origen=document.getElementById('v-origen').value,claveV=document.getElementById('v-emp').value,destino=document.getElementById('v-destino').value,nom=document.getElementById('v-emp').options[document.getElementById('v-emp').selectedIndex]?.text||'';if(!origen||!claveV||!destino){alert('Selecciona origen, empleado y destino.');return;}if(origen===destino){alert('Origen y destino deben ser diferentes.');return;}try{await POST('visitas',{clave:claveV,nombre:nom,origen,destino});document.getElementById('v-origen').value='';document.getElementById('v-emp').innerHTML='<option value="">— Empleado —</option>';document.getElementById('v-destino').value='';cargarVisitas();}catch(e){if(e.message.includes('unique'))alert('Ese permiso ya existe.');else alert('Error: '+e.message);}}
+async function cargarVisitas(){const el=document.getElementById('lista-visitas');el.innerHTML='<div style="font-size:13px;color:var(--text3)">Cargando...</div>';try{const vis=await GET('visitas','select=*&order=nombre');if(!vis.length){el.innerHTML='<div style="font-size:13px;color:var(--text3)">Sin permisos.</div>';return;}el.innerHTML=vis.map(v=>{const to=TIENDAS.find(x=>x.num===v.origen),td=TIENDAS.find(x=>x.num===v.destino);return'<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;gap:8px;flex-wrap:wrap"><span><strong style="color:#fff">'+v.nombre+'</strong> <span style="color:var(--text3)">'+v.origen+(to?' '+to.nom:'')+'</span> → <span style="color:var(--accent);font-weight:500">'+v.destino+(td?' '+td.nom:'')+'</span></span><button class="btn-danger no-print" onclick="revocarVisita(\''+v.id+'\',\''+v.nombre+'\')">Revocar</button></div>';}).join('');}catch{el.innerHTML='<div style="font-size:13px;color:var(--red)">Error.</div>';}}
+async function revocarVisita(id,nombre){if(!confirm('¿Revocar permiso de '+nombre+'?'))return;try{await DEL('visitas','id=eq.'+id);cargarVisitas();}catch{}}
+async function renderLog(){
+  const tipo=document.getElementById('flog-tipo').value,fecha=document.getElementById('flog-fecha').value||hoy();
+  const tb=document.getElementById('tbody-log');tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:1rem;color:var(--text3)">Cargando...</td></tr>';
+  let p='select=*&ts=gte.'+fecha+'T00:00:00&ts=lte.'+fecha+'T23:59:59&order=ts.desc&limit=200';if(tipo)p+='&tipo=eq.'+tipo;
+  try{const logs=await GET('log_accesos',p);if(!logs.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text3)">Sin registros.</td></tr>';return;}tb.innerHTML=logs.map(l=>'<tr><td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text2)">'+fmtH(l.ts)+' '+fmtF(l.ts)+'</td><td style="color:#fff">'+l.tipo+'</td><td style="color:var(--text2)">'+(l.tienda?nomT(l.tienda):'—')+'</td><td>'+(l.exitoso?'<span style="color:var(--green)">✅ Exitoso</span>':'<span style="color:var(--red)">❌ Fallido</span>')+'</td></tr>').join('');}catch{tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--red);padding:1rem">Error.</td></tr>';}
+}
+// ── HUELLAS ───────────────────────────────────────────
+async function renderHuellas(){
+  const tb=document.getElementById('tbody-huellas');
+  const tiendaF=document.getElementById('fhue-tienda')?.value||'';
+  tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:1rem;color:var(--text3)">Cargando...</td></tr>';
+  try{
+    let pEmp='select=*&order=tienda,nombre';
+    if(tiendaF)pEmp+='&tienda=eq.'+tiendaF;
+    const [emps,huellas]=await Promise.all([
+      GET('empleados',pEmp),
+      GET('huellas_empleados','select=empleado_clave,created_at')
+    ]);
+    const huellaMap={};huellas.forEach(h=>huellaMap[h.empleado_clave]=h);
+    if(!emps.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text3)">Sin empleados.</td></tr>';return;}
+    tb.innerHTML=emps.map(e=>{
+      const tiene=huellaMap[e.clave];
+      const estadoBadge=tiene
+        ?'<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:var(--green);border:1px solid rgba(22,163,74,0.3);font-weight:700">✓ Registrada</span>'
+        :'<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#fef2f2;color:var(--elite-red);border:1px solid rgba(204,0,0,0.2);font-weight:700">✗ Sin huella</span>';
+      const btnRegistrar=`<button class="btn-cyan" onclick="iniciarRegistroHuella('${e.clave}','${e.nombre.replace(/'/g,"\\'")}','${e.tienda}')" style="font-size:11px;padding:3px 12px">${tiene?'🔄 Re-registrar':'🖐 Registrar'}</button>`;
+      const btnBorrar=tiene?`<button class="btn-danger" onclick="borrarHuella('${e.clave}','${e.nombre.replace(/'/g,"\\'")}')">✗ Borrar</button>`:'';
+      return '<tr>'
+        +'<td style="color:var(--text);font-weight:500">'+nomT(e.tienda)+'</td>'
+        +'<td style="color:var(--text);font-weight:600">'+e.nombre+'</td>'
+        +'<td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text2)">'+e.clave+'</td>'
+        +'<td>'+estadoBadge+(tiene?'<span style="font-size:10px;color:var(--text3);margin-left:8px">'+fmtF(tiene.created_at)+'</span>':'')+'</td>'
+        +'<td class="no-print" style="display:flex;gap:6px;align-items:center">'+btnRegistrar+btnBorrar+'</td>'
+        +'</tr>';
+    }).join('');
+  }catch(e){tb.innerHTML='<tr><td colspan="5" style="color:var(--red);padding:1rem;text-align:center">Error: '+e.message+'</td></tr>';}
+}
+
+let huellaRegistroState={clave:'',nombre:'',tienda:'',template1:null,intento:1};
+
+function iniciarRegistroHuella(clave,nombre,tienda){
+  if(!wsConectado){
+    alert('El servicio Elite Huella no está corriendo.\nEjecuta elite_huella.py primero.');
+    return;
+  }
+  huellaRegistroState={clave,nombre,tienda,template1:null,intento:1};
+  document.getElementById('hue-nombre').textContent=nombre;
+  document.getElementById('hue-tienda-txt').textContent=nomT(tienda);
+  document.getElementById('hue-intento').textContent='1 de 2';
+  document.getElementById('hue-msg').textContent='Pide al empleado que ponga el dedo en el lector...';
+  document.getElementById('hue-msg').style.color='var(--text2)';
+  document.getElementById('hue-btn-cancelar').style.display='';
+  document.getElementById('hue-btn-ok').style.display='none';
+  document.getElementById('modal-huella-reg').classList.add('open');
+  capturarParaRegistro();
+}
+
+function capturarParaRegistro(){
+  document.getElementById('hue-msg').textContent=
+    huellaRegistroState.intento===1
+      ?'Pon el dedo en el lector...'
+      :'Levanta el dedo y vuelve a ponerlo para confirmar...';
+  document.getElementById('hue-msg').style.color='var(--cyan)';
+  document.getElementById('hue-intento').textContent=huellaRegistroState.intento+' de 2';
+
+  wsCallback=(resultado)=>{
+    if(resultado==='error_registro'||resultado==='timeout'){
+      document.getElementById('hue-msg').textContent='No se pudo capturar. Intenta de nuevo.';
+      document.getElementById('hue-msg').style.color='var(--elite-red)';
+      setTimeout(capturarParaRegistro,2000);
+      return;
+    }
+    if(huellaRegistroState.intento===1){
+      huellaRegistroState.template1=resultado;
+      huellaRegistroState.intento=2;
+      document.getElementById('hue-msg').textContent='✓ 1er dedo capturado. Levanta el dedo y vuelve a ponerlo...';
+      document.getElementById('hue-msg').style.color='var(--green)';
+      setTimeout(capturarParaRegistro,1500);
+    }else{
+      // Guardar en Supabase
+      guardarHuella(resultado);
+    }
+  };
+  ws.send(JSON.stringify({cmd:'registrar',timeout:12}));
+}
+
+async function guardarHuella(template2){
+  const{clave,nombre,tienda,template1}=huellaRegistroState;
+  document.getElementById('hue-msg').textContent='Guardando huella en la base de datos...';
+  document.getElementById('hue-msg').style.color='var(--cyan)';
+  try{
+    // Usar template1 como referencia (primer captura)
+    // Borrar si existe
+    await DEL('huellas_empleados','empleado_clave=eq.'+clave);
+    await POST('huellas_empleados',{
+      empleado_clave:clave,
+      empleado_nombre:nombre,
+      tienda:tienda,
+      template:template1,
+      registrada_por:'admin'
+    });
+    document.getElementById('hue-msg').textContent='✅ Huella registrada correctamente';
+    document.getElementById('hue-msg').style.color='var(--green)';
+    document.getElementById('hue-btn-cancelar').style.display='none';
+    document.getElementById('hue-btn-ok').style.display='';
+    renderHuellas();
+  }catch(e){
+    document.getElementById('hue-msg').textContent='Error al guardar: '+e.message;
+    document.getElementById('hue-msg').style.color='var(--elite-red)';
+  }
+}
+
+async function borrarHuella(clave,nombre){
+  if(!confirm('¿Borrar la huella de '+nombre+'?\nDeberá registrarse de nuevo.'))return;
+  try{
+    await DEL('huellas_empleados','empleado_clave=eq.'+clave);
+    renderHuellas();
+  }catch(e){alert('Error: '+e.message);}
+}
+
+// Verificación con template guardado al checar
+async function obtenerTemplateEmpleado(clave){
+  try{
+    const h=await GET('huellas_empleados','select=template&empleado_clave=eq.'+clave);
+    return h.length?h[0].template:null;
+  }catch{return null;}
+}
+// ── CAMBIOS DE TURNO ─────────────────────────────────
+async function renderTurnos(){
+  const tb=document.getElementById('tbody-turnos');
+  const tiendaF=document.getElementById('ftur-tienda')?.value||'';
+  tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:1rem;color:var(--text3)">Cargando...</td></tr>';
+  try{
+    let p='select=*&cancelado=eq.false&order=fecha_inicio.desc&limit=200';
+    if(tiendaF)p+='&tienda=eq.'+tiendaF;
+    const cambios=await GET('cambios_turno',p);
+    if(!cambios.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:1.5rem;color:var(--text3)">Sin cambios de turno activos.</td></tr>';return;}
+    const hoy2=hoy();
+    tb.innerHTML=cambios.map(c=>{
+      const activo=(!c.fecha_fin||c.fecha_fin>=hoy2)&&c.fecha_inicio<=hoy2;
+      const futuro=c.fecha_inicio>hoy2;
+      const estado=activo
+        ?'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:#f0fdf4;color:var(--green);border:1px solid rgba(22,163,74,0.3);font-weight:700">✓ Activo</span>'
+        :futuro
+        ?'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:#eff6ff;color:var(--cyan);border:1px solid rgba(3,105,161,0.3);font-weight:700">Programado</span>'
+        :'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:var(--bg3);color:var(--text3);font-weight:700">Expirado</span>';
+      const durLabel={
+        '1dia':'1 día','rango':'Rango','semana':'1 semana','mes':'1 mes','indefinido':'Indefinido'
+      }[c.duracion]||c.duracion;
+      return'<tr>'
+        +'<td style="color:var(--text);font-weight:500">'+nomT(c.tienda)+'</td>'
+        +'<td style="color:var(--text);font-weight:600">'+c.empleado_nombre+'</td>'
+        +'<td><span style="font-size:12px;padding:2px 10px;background:#fef2f2;color:var(--elite-red);border-radius:6px;font-weight:600">'+c.turno_nuevo+'</span><br><span style="font-size:11px;color:var(--text3)">'+c.hora_entrada+' – '+c.hora_salida+'</span></td>'
+        +'<td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text)">'+fmtF(c.fecha_inicio+'T12:00:00')+'</td>'
+        +'<td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text3)">'+(c.fecha_fin?fmtF(c.fecha_fin+'T12:00:00'):'—')+'</td>'
+        +'<td style="font-size:12px;color:var(--text2)">'+durLabel+'</td>'
+        +'<td style="font-size:12px;color:var(--text3)">'+c.motivo+'</td>'
+        +'<td>'+estado+'</td>'
+        +'<td class="no-print"><button class="btn-danger" onclick="cancelarCambioTurno(\''+c.id+'\')">✗ Cancelar</button></td>'
+        +'</tr>';
+    }).join('');
+  }catch(e){tb.innerHTML='<tr><td colspan="9" style="color:var(--red);padding:1rem;text-align:center">Error: '+e.message+'</td></tr>';}
+}
+
+function abrirModalTurno(tiendaFija){
+  const mturTienda=document.getElementById('mtur-tienda');
+  poblarSelect('mtur-tienda',false);
+  document.getElementById('mtur-emp').innerHTML='<option value="">— Selecciona sucursal primero —</option>';
+  document.getElementById('mtur-turno').innerHTML='<option value="">— Selecciona sucursal primero —</option>';
+  document.getElementById('mtur-desde').value=hoy();
+  document.getElementById('mtur-duracion').value='1dia';
+  document.getElementById('mtur-hasta-wrap').style.display='none';
+  document.getElementById('mtur-msg').style.display='none';
+  if(tiendaFija){
+    mturTienda.value=tiendaFija;
+    cargarEmpleadosTurno();
+  }
+  document.getElementById('modal-turno').classList.add('open');
+}
+
+async function cargarEmpleadosTurno(){
+  const tienda=document.getElementById('mtur-tienda').value;
+  const selEmp=document.getElementById('mtur-emp');
+  const selTurno=document.getElementById('mtur-turno');
+  if(!tienda){selEmp.innerHTML='<option>— Selecciona sucursal primero —</option>';return;}
+  try{
+    const [emps,turnos]=await Promise.all([
+      GET('empleados','select=clave,nombre&tienda=eq.'+tienda+'&order=nombre'),
+      GET('horarios_permitidos','select=*&tienda=eq.'+tienda+'&order=turno')
+    ]);
+    selEmp.innerHTML='<option value="">— Selecciona empleado —</option>'+emps.map(e=>'<option value="'+e.clave+'|'+e.nombre+'">'+e.nombre+'</option>').join('');
+    selTurno.innerHTML='<option value="">— Selecciona turno —</option>'+turnos.map(t=>'<option value="'+t.turno+'|'+t.hora_entrada+'|'+t.hora_salida+'|'+t.minutos_comida+'|'+(t.turno==='Apertura a Cierre'?'1':'0')+'">'+t.turno+': '+t.hora_entrada+' – '+t.hora_salida+'</option>').join('');
+  }catch(e){selEmp.innerHTML='<option>Error: '+e.message+'</option>';}
+}
+
+function calcularFechaFin(){
+  const dur=document.getElementById('mtur-duracion').value;
+  const desdeStr=document.getElementById('mtur-desde').value||hoy();
+  const wrap=document.getElementById('mtur-hasta-wrap');
+  const inpHasta=document.getElementById('mtur-hasta');
+  if(dur==='rango'){wrap.style.display='block';return;}
+  wrap.style.display='none';
+  const desde=new Date(desdeStr+'T12:00:00');
+  if(dur==='1dia'){inpHasta.value=desdeStr;}
+  else if(dur==='semana'){
+    const fin=new Date(desde);fin.setDate(fin.getDate()+(6-fin.getDay()+1)%7||7);
+    inpHasta.value=fin.toLocaleDateString('sv');
+  }else if(dur==='mes'){
+    const fin=new Date(desde);fin.setMonth(fin.getMonth()+1);fin.setDate(0);
+    inpHasta.value=fin.toLocaleDateString('sv');
+  }else if(dur==='indefinido'){inpHasta.value='';}
+}
+
+async function guardarCambioTurno(){
+  const tienda=document.getElementById('mtur-tienda').value;
+  const empVal=document.getElementById('mtur-emp').value;
+  const turnoVal=document.getElementById('mtur-turno').value;
+  const desde=document.getElementById('mtur-desde').value;
+  const dur=document.getElementById('mtur-duracion').value;
+  const hasta=dur==='indefinido'?null:(dur==='rango'?document.getElementById('mtur-hasta').value:document.getElementById('mtur-hasta').value||desde);
+  const motivo=document.getElementById('mtur-motivo').value;
+  const msg=document.getElementById('mtur-msg');
+  if(!tienda||!empVal||!turnoVal||!desde){msg.textContent='Completa todos los campos.';msg.style.display='block';return;}
+  const[empClave,empNombre]=empVal.split('|');
+  const[turnoNom,horaEnt,horaSal,minCom,esEnc]=turnoVal.split('|');
+  try{
+    await POST('cambios_turno',{
+      empleado_clave:empClave,empleado_nombre:empNombre,tienda,
+      turno_nuevo:turnoNom,hora_entrada:horaEnt,hora_salida:horaSal,
+      minutos_comida:parseInt(minCom)||60,
+      es_encargado_turno:esEnc==='1',
+      fecha_inicio:desde,fecha_fin:hasta||null,
+      duracion:dur,motivo,
+      cancelado:false,
+      creado_por:nivelAdmin===1?'admin1':(tiendaEncargado?'encargado':'admin2')
+    });
+    // Si es el mismo día → cancelar retardos del día con ese empleado
+    if(desde===hoy()){
+      await cancelarRetardosDia(empClave,desde,turnoNom);
+    }
+    cerrarModal('modal-turno');
+    renderTurnos();
+  }catch(e){msg.textContent='Error: '+e.message;msg.style.display='block';}
+}
+
+async function cancelarRetardosDia(empClave,fecha,turnoNuevo){
+  try{
+    // Buscar retardos del empleado en esa fecha
+    const rets=await GET('retardos','select=*&empleado_clave=eq.'+empClave+'&fecha=eq.'+fecha+'&saldo_pagado=eq.false');
+    if(rets.length){
+      // Borrar retardos del día (se le perdonan por cambio de turno)
+      await DEL('retardos','empleado_clave=eq.'+empClave+'&fecha=eq.'+fecha);
+      // Registrar en historial
+      await POST('historial_saldos',{
+        empleado_clave:empClave,empleado_nombre:rets[0].empleado_nombre,
+        tienda:rets[0].tienda,fecha,
+        tipo:'cancelado',minutos:rets.reduce((a,r)=>a+r.minutos_tarde,0),
+        descripcion:'Retardo cancelado — cambio de turno a '+turnoNuevo+' autorizado'
+      });
+    }
+  }catch(e){console.error('cancelarRetardosDia:',e);}
+}
+
+async function cancelarCambioTurno(id){
+  if(!confirm('¿Cancelar este cambio de turno?'))return;
+  try{
+    await PATCH('cambios_turno',{cancelado:true},'id=eq.'+id);
+    renderTurnos();
+  }catch(e){alert('Error: '+e.message);}
+}
+
+// Obtener turno activo del empleado (considera cambios temporales)
+async function obtenerTurnoActivo(empClave,fecha){
+  try{
+    const cambios=await GET('cambios_turno',
+      'select=*&empleado_clave=eq.'+empClave+'&cancelado=eq.false'
+      +'&fecha_inicio=lte.'+fecha
+      +'&or=(fecha_fin.is.null,fecha_fin.gte.'+fecha+')'
+      +'&order=created_at.desc&limit=1'
+    );
+    return cambios.length?cambios[0]:null;
+  }catch{return null;}
+}
+
+// ── PUESTOS ───────────────────────────────────────────
+async function renderPuestos(){
+  const el=document.getElementById('lista-puestos');
+  try{
+    const puestos=await GET('puestos','select=*&order=nombre');
+    if(!puestos.length){el.innerHTML='<div style="font-size:13px;color:var(--text3)">Sin puestos configurados.</div>';return;}
+    el.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:8px">'
+      +puestos.map(p=>'<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg3);border-radius:20px;border:1px solid var(--border)">'
+        +'<span style="font-size:13px;font-weight:600;color:var(--text)">'+p.nombre+'</span>'
+        +(nivelAdmin===1?'<button class="btn-danger" onclick="borrarPuesto(\''+p.id+'\',\''+p.nombre+'\')" style="padding:1px 6px;font-size:11px;border:none;background:transparent;box-shadow:none">✕</button>':'')
+        +'</div>').join('')
+      +'</div>';
+  }catch(e){el.innerHTML='<div style="color:var(--red)">Error: '+e.message+'</div>';}
+}
+
+async function agregarPuesto(){
+  const inp=document.getElementById('inp-nuevo-puesto');
+  const nombre=inp.value.trim();
+  if(!nombre)return;
+  try{
+    await POST('puestos',{nombre:nombre.toUpperCase(),activo:true});
+    inp.value='';
+    renderPuestos();
+  }catch(e){alert('Error: '+e.message);}
+}
+
+async function borrarPuesto(id,nombre){
+  if(!confirm('¿Eliminar el puesto "'+nombre+'"?'))return;
+  try{await DEL('puestos','id=eq.'+id);renderPuestos();}
+  catch(e){alert('Error: '+e.message);}
+}
+// ── FIN TURNOS Y PUESTOS ──────────────────────────────
+let chatInterval=null;
+async function renderChat(){
+  const tienda=document.getElementById('fchat-tienda')?.value||'';
+  const box=document.getElementById('chat-mensajes');
+  if(!tienda){box.innerHTML='<div style="font-size:13px;color:var(--text3);text-align:center;margin:auto">Selecciona una tienda</div>';return;}
+  try{
+    const msgs=await GET('mensajes_chat','select=*&tienda=eq.'+tienda+'&order=created_at.asc&limit=100');
+    if(!msgs.length){box.innerHTML='<div style="font-size:13px;color:var(--text3);text-align:center;margin:auto">Sin mensajes aún</div>';return;}
+    // Marcar como leídos los de la tienda
+    await PATCH('mensajes_chat',{leido:true},'tienda=eq.'+tienda+'&de=eq.tienda&leido=eq.false');
+    box.innerHTML=msgs.map(m=>{
+      const esAdmin=m.de==='admin'||m.de==='admin2';
+      const hora=new Date(m.created_at).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+      const fecha=fmtF(m.created_at);
+      return'<div style="display:flex;flex-direction:column;align-items:'+(esAdmin?'flex-end':'flex-start')+';gap:2px">'
+        +'<div style="max-width:80%;background:'+(esAdmin?'var(--elite-red)':'#fff')+';color:'+(esAdmin?'#fff':'var(--text)')+';border-radius:12px;padding:8px 12px;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,0.1)">'
+        +m.mensaje+'</div>'
+        +'<div style="font-size:10px;color:var(--text3)">'+fecha+' '+hora+' · '+(esAdmin?'Admin':'Tienda')+'</div>'
+        +'</div>';
+    }).join('');
+    box.scrollTop=box.scrollHeight;
+    // Badge no leídos
+    actualizarBadgeChat();
+  }catch(e){box.innerHTML='<div style="font-size:13px;color:var(--red)">Error: '+e.message+'</div>';}
+}
+
+async function enviarMensajeAdmin(){
+  const tienda=document.getElementById('fchat-tienda')?.value||'';
+  const inp=document.getElementById('chat-inp');
+  const msg=inp.value.trim();
+  if(!tienda||!msg)return;
+  try{
+    await POST('mensajes_chat',{tienda,de:'admin',para:'tienda',mensaje:msg,leido:false});
+    inp.value='';
+    renderChat();
+  }catch(e){alert('Error: '+e.message);}
+}
+
+async function actualizarBadgeChat(){
+  try{
+    const noLeidos=await GET('mensajes_chat','select=id&de=eq.tienda&leido=eq.false');
+    const tab=document.querySelector('.admin-tab[onclick*="chat"]');
+    if(!tab)return;
+    if(noLeidos.length>0){
+      tab.textContent='💬 Chat ('+noLeidos.length+')';
+      tab.style.color='var(--elite-red)';
+    }else{
+      tab.textContent='💬 Chat';
+      tab.style.color='';
+    }
+  }catch{}
+}
+
+// Chat en modo tienda — panel desplegable
+async function cargarChatTienda(){
+  if(!tiendaActual)return;
+  const box=document.getElementById('chat-tienda-msgs');
+  if(!box)return;
+  try{
+    const msgs=await GET('mensajes_chat','select=*&tienda=eq.'+tiendaActual+'&order=created_at.asc&limit=50');
+    // Marcar admin mensajes como leídos
+    if(msgs.some(m=>m.de==='admin'&&!m.leido)){
+      await PATCH('mensajes_chat',{leido:true},'tienda=eq.'+tiendaActual+'&de=eq.admin&leido=eq.false');
+    }
+    if(!msgs.length){box.innerHTML='<div style="font-size:13px;color:var(--text3);text-align:center;padding:1rem">Sin mensajes</div>';return;}
+    box.innerHTML=msgs.map(m=>{
+      const esAdmin=m.de==='admin'||m.de==='admin2';
+      const hora=new Date(m.created_at).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+      return'<div style="display:flex;flex-direction:column;align-items:'+(esAdmin?'flex-start':'flex-end')+';gap:2px;margin-bottom:6px">'
+        +'<div style="max-width:85%;background:'+(esAdmin?'#f0f0f0':'var(--elite-red)')+';color:'+(esAdmin?'var(--text)':'#fff')+';border-radius:10px;padding:7px 11px;font-size:13px">'
+        +m.mensaje+'</div>'
+        +'<div style="font-size:10px;color:var(--text3)">'+hora+' · '+(esAdmin?'Admin':'Tú')+'</div>'
+        +'</div>';
+    }).join('');
+    box.scrollTop=box.scrollHeight;
+    // Badge en panel tienda
+    const badge=document.getElementById('chat-badge-tienda');
+    const noLeidos=msgs.filter(m=>m.de==='admin'&&!m.leido).length;
+    if(badge)badge.style.display=noLeidos>0?'inline-block':'none';
+  }catch{}
+}
+
+async function enviarMensajeTienda(){
+  const inp=document.getElementById('chat-inp-tienda');
+  const msg=inp?.value.trim()||'';
+  if(!tiendaActual||!msg)return;
+  try{
+    await POST('mensajes_chat',{tienda:tiendaActual,de:'tienda',para:'admin',mensaje:msg,leido:false});
+    inp.value='';
+    cargarChatTienda();
+  }catch(e){alert('Error: '+e.message);}
+}
+// Actualizar badge admin cada 30s
+setInterval(actualizarBadgeChat,30000);
+// ── FIN CHAT ────────────────────────────────────────────
+function salirCompletamente(){
+  if(!confirm('¿Salir completamente?\nSe cerrará la sesión actual.'))return;
+  modo='tienda';
+  document.getElementById('modo-admin').style.display='none';
+  document.getElementById('modo-encargado').style.display='none';
+  document.getElementById('modo-tienda').style.display='block';
+  document.getElementById('rol-badge').textContent='Modo tienda';
+  document.getElementById('rol-badge').className='rol-badge rol-tienda';
+  document.getElementById('btn-admin-acceso').style.display='';
+  document.getElementById('btn-enc-acceso').style.display='';
+  document.getElementById('btn-salir-total').style.display='none';
+  document.getElementById('btn-cambiar-tienda').style.display='none';
+  nivelAdmin=1; tiendaEncargado=''; horariosEditados={};
+  clearTimeout(sessionTimer);
+  document.removeEventListener('click',resetSessionTimer);
+  cargarHoy();
+}
+function renderSistema(){
+  const esAdmin1=nivelAdmin===1;
+  document.getElementById('panel-cambiar-pass').style.display=esAdmin1?'block':'none';
+  document.getElementById('panel-nueva-tienda').style.display=esAdmin1?'block':'none';
+  document.getElementById('rol-badge').textContent=esAdmin1?'Administrador':'Administrador 2';
+  document.getElementById('btn-salir-total').style.display='';
+  // Stats con filtro tienda
+  const grid=document.getElementById('stats-grid');
+  grid.innerHTML='<div style="grid-column:1/-1;margin-bottom:10px"><select id="stat-tienda" onchange="cargarStats()" style="width:auto;min-width:200px;padding:6px 12px"><option value="">Todas las sucursales</option>'+TIENDAS.map(t=>'<option value="'+t.num+'">'+t.num+' — '+t.nom+'</option>').join('')+'</select></div>'
+    +'<div class="stat-box"><div class="stat-num" id="st-registros" style="color:var(--text)">—</div><div class="stat-label">Registros totales</div></div>'
+    +'<div class="stat-box"><div class="stat-num" id="st-emps" style="color:var(--text)">—</div><div class="stat-label">Empleados</div></div>'
+    +'<div class="stat-box"><div class="stat-num" id="st-rets" style="color:var(--elite-red)">—</div><div class="stat-label">Retardos esta semana</div></div>'
+    +'<div class="stat-box"><div class="stat-num" id="st-sancs" style="color:var(--amber)">—</div><div class="stat-label">Sanciones activas</div></div>';
+  cargarStats();
+}
+async function cargarStats(){
+  const t=document.getElementById('stat-tienda')?.value||'';
+  const semana=lunesStr(0);
+  try{
+    const[regs,emps,rets,sancs]=await Promise.all([
+      GET('registros','select=id'+(t?'&tienda=eq.'+t:'')),
+      GET('empleados','select=id'+(t?'&tienda=eq.'+t:'')),
+      GET('retardos','select=id&semana_inicio=eq.'+semana+(t?'&tienda=eq.'+t:'')),
+      GET('sanciones','select=id&cumplida=eq.false'+(t?'&tienda=eq.'+t:''))
+    ]);
+    document.getElementById('st-registros').textContent=regs.length.toLocaleString('es-MX');
+    document.getElementById('st-emps').textContent=emps.length;
+    document.getElementById('st-rets').textContent=rets.length;
+    document.getElementById('st-sancs').textContent=sancs.length;
+  }catch(e){console.error('stats:',e);}
+}
+function sb(n,l){return'<div class="stat-box"><div class="stat-num" style="color:var(--text)">'+n+'</div><div class="stat-label">'+l+'</div></div>';}
+async function cambiarAdmin(nivel){
+  const inp=document.getElementById(nivel===2?'inp-nueva-admin2':'inp-nueva-admin');
+  const ok=document.getElementById(nivel===2?'ok-admin2':'ok-admin');
+  const v=inp.value.trim();
+  if(!v){alert('Escribe la nueva contraseña primero.');return;}
+  if(nivelAdmin!==1){alert('Solo el Admin 1 puede cambiar contraseñas.');return;}
+  if(v.length<4){alert('La contraseña debe tener al menos 4 caracteres.');return;}
+  try{
+    const clave=nivel===2?'adminPass2':'adminPass';
+    // Intentar actualizar primero
+    const existe=await GET('config','select=id&clave=eq.'+clave);
+    if(existe.length){
+      await PATCH('config',{valor:v},'clave=eq.'+clave);
+    }else{
+      // Crear registro nuevo
+      await fetch(SU+'/rest/v1/config',{
+        method:'POST',
+        headers:{...H,'Prefer':'return=minimal'},
+        body:JSON.stringify({clave,valor:v})
+      });
+    }
+    inp.value='';
+    ok.textContent='✓ Contraseña Admin '+(nivel===2?'2':'1')+' actualizada correctamente';
+    ok.style.display='block';
+    setTimeout(()=>ok.style.display='none',3000);
+  }catch(e){alert('Error al actualizar: '+e.message);}
+}
+
+async function agregarTienda(){
+  if(nivelAdmin!==1){alert('Solo el Admin 1 puede agregar sucursales.');return;}
+  const num=document.getElementById('inp-nueva-tienda-num').value.trim().toUpperCase();
+  const nom=document.getElementById('inp-nueva-tienda-nom').value.trim().toUpperCase();
+  const errEl=document.getElementById('err-tienda');
+  const okEl=document.getElementById('ok-tienda');
+  errEl.style.display='none';okEl.style.display='none';
+  if(!num||!nom){errEl.textContent='Ingresa número y nombre.';errEl.style.display='block';return;}
+  // Agregar a la lista TIENDAS en JS y a horarios_permitidos en Supabase
+  if(!TIENDAS.find(t=>t.num===num)){
+    TIENDAS.push({num,nom});
+    // Poblar selects de tienda
+    ['f-tienda','fr-tienda','cfg-tienda','v-origen','v-destino','fh-tienda','fex-tienda','fsan-tienda','fhue-tienda','fca-tienda'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el)return;
+      const hasAll=el.options[0]?.value==='';
+      const opt=document.createElement('option');
+      opt.value=num;opt.textContent=num+' — '+nom;
+      el.appendChild(opt);
+    });
+  }
+  // Agregar horarios por defecto
+  try{
+    const exist=await GET('horarios_permitidos','select=id&tienda=eq.'+num+'&limit=1');
+    if(!exist.length){
+      await POST('horarios_permitidos',{tienda:num,turno:'1er turno',hora_entrada:'09:30',hora_salida:'19:30',minutos_comida:60});
+      await POST('horarios_permitidos',{tienda:num,turno:'2do turno',hora_entrada:'11:30',hora_salida:'21:00',minutos_comida:60});
+      await POST('horarios_permitidos',{tienda:num,turno:'Apertura a Cierre',hora_entrada:'09:00',hora_salida:'21:00',minutos_comida:60});
+    }
+    document.getElementById('inp-nueva-tienda-num').value='';
+    document.getElementById('inp-nueva-tienda-nom').value='';
+    okEl.textContent='✓ Sucursal '+num+' — '+nom+' agregada correctamente';
+    okEl.style.display='block';
+    setTimeout(()=>okEl.style.display='none',4000);
+  }catch(e){errEl.textContent='Error: '+e.message;errEl.style.display='block';}
+}
+async function exportarCSV(tipo){
+  try{
+    let data,rows,nombre;
+    if(tipo==='historial'){data=await GET('registros','select=*&order=ts.desc&limit=50000');rows=[['Fecha','Hora','Sucursal','Empleado','Tipo','Estado Huella','Visita','Sucursal Origen']];data.forEach(r=>{const t=TIENDAS.find(x=>x.num===r.tienda);rows.push([fmtF(r.ts),fmtH(r.ts),r.tienda,t?t.nom:'',r.empleado,r.tipo,r.estado_huella||'',r.es_visita?'Sí':'No',r.tienda_origen||r.tienda]);});nombre='elite_historial_'+hoy();}
+    else if(tipo==='retardos'){data=await GET('retardos','select=*&order=fecha.desc&limit=10000');rows=[['Fecha','Sucursal','Empleado','Hora Entrada','Hora Límite','Minutos Tarde','Semana']];data.forEach(r=>{rows.push([fmtF(r.fecha+'T12:00:00'),r.tienda,r.empleado_nombre,r.hora_entrada,r.hora_limite,r.minutos_tarde,fmtF(r.semana_inicio+'T12:00:00')]);});nombre='elite_retardos_'+hoy();}
+    else if(tipo==='extras'){data=await GET('acumulados','select=*&order=empleado_nombre');rows=[['Sucursal','Empleado','Min Extras','Min Comida Exceso']];data.forEach(r=>{rows.push([r.tienda,r.empleado_nombre,r.minutos_extras,r.minutos_comida_exceso]);});nombre='elite_extras_'+hoy();}
+    else{data=await GET('sanciones','select=*&order=fecha_sancion.desc');rows=[['Empleado','Sucursal','Semana','Retardos','Sanción','Cumplida']];data.forEach(r=>{rows.push([r.empleado_nombre,r.tienda,fmtF(r.semana_inicio+'T12:00:00'),r.retardos_semana,'Mañana apertura a cierre',r.cumplida?'Sí':'No']);});nombre='elite_sanciones_'+hoy();}
+    if(!rows||rows.length<=1){alert('Sin datos.');return;}
+    const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+    const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download=nombre+'.csv';a.click();
+  }catch(e){alert('Error: '+e.message);}
+}
+document.addEventListener('keydown',e=>{if(modo!=='tienda')return;if(['modal-admin','modal-encargado'].some(id=>document.getElementById(id).classList.contains('open')))return;if(document.getElementById('panel-huella').classList.contains('open'))return;if(e.key>='0'&&e.key<='9')presNum(e.key);else if(e.key==='Backspace')borrar();else if(e.key==='Enter')confirmar();});
+cargarHoy();setInterval(()=>{if(modo==='tienda'){cargarHoy();verificarMensajesNuevosTienda();}},10000);
+verificarTiendaGuardada();
+// Solicitar permiso notificaciones al cargar
+if('Notification' in window&&Notification.permission==='default'){
+  Notification.requestPermission().then(()=>{});
+}
+async function verificarMensajesNuevosTienda(){
+  if(!tiendaActual)return;
+  try{
+    const n=await GET('mensajes_chat','select=*&tienda=eq.'+tiendaActual+'&de=eq.admin&leido=eq.false&order=created_at.desc&limit=5');
+    const badge=document.getElementById('chat-badge-tienda');
+    if(badge)badge.style.display=n.length>0?'inline-block':'none';
+    if(n.length>0){
+      const panelAbierto=document.getElementById('drop-chat-tienda')?.style.display!=='none';
+      if(!panelAbierto)mostrarAlertaChat(n[0].mensaje,n.length);
+    }
+  }catch{}
+}
+let _alertaTimer=null;
+function mostrarAlertaChat(msg,total){
+  // Notificación del sistema (aparece aunque esté minimizado)
+  if('Notification' in window&&Notification.permission==='granted'){
+    const notif=new Notification('💬 Mensaje de Administración — Zapaterías Elite',{
+      body:msg.substring(0,120),
+      icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23cc0000"/><text y=".9em" font-size="80" x="10">👟</text></svg>',
+      requireInteraction:true,
+      tag:'elite-chat'
+    });
+    notif.onclick=()=>{
+      window.focus();
+      const drop=document.getElementById('drop-chat-tienda');
+      if(drop){drop.style.display='block';drop.classList.add('open');}
+      cargarChatTienda();
+      notif.close();
+    };
+  }
+  // Alerta flotante en pantalla
+  let el=document.getElementById('alerta-chat-flotante');
+  if(!el){el=document.createElement('div');el.id='alerta-chat-flotante';document.body.appendChild(el);}
+  el.style.cssText='position:fixed;bottom:24px;right:24px;background:var(--elite-red);color:#fff;border-radius:var(--radius);padding:14px 18px;box-shadow:0 8px 24px rgba(0,0,0,0.35);z-index:9999;cursor:pointer;max-width:320px;transition:all .3s';
+  el.innerHTML='<div style="font-size:11px;font-weight:800;letter-spacing:.05em;margin-bottom:4px">💬 MENSAJE DEL ADMINISTRADOR</div>'
+    +'<div style="font-size:13px;line-height:1.5">'+msg.substring(0,80)+(msg.length>80?'...':'')+'</div>'
+    +'<div style="font-size:11px;opacity:.75;margin-top:6px">Toca para ver'+(total>1?' (+'+(total-1)+' más)':'')+'</div>';
+  el.onclick=()=>{
+    const drop=document.getElementById('drop-chat-tienda');
+    if(drop){drop.style.display='block';drop.classList.add('open');}
+    cargarChatTienda();el.remove();
+  };
+  clearTimeout(_alertaTimer);
+  _alertaTimer=setTimeout(()=>{if(el&&el.parentNode)el.remove();},10000);
+}
+</script>
+</body>
+</html>
