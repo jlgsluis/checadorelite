@@ -385,6 +385,7 @@ tr:hover td{background:rgba(204,0,0,0.03)}
     <div class="card-label">Asignar horarios de la semana</div>
     <div id="enc-tabla-horarios"><div style="font-size:13px;color:var(--text3)">Cargando...</div></div>
     <div style="margin-top:1rem;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap" class="no-print">
+      <button class="btn-cyan" onclick="abrirModalTurnoNuevo(tiendaEncargado)" style="font-size:12px;padding:6px 14px">➕ Agregar turno predeterminado</button>
       <button class="btn-cyan" onclick="abrirModalTurno(tiendaEncargado)" style="font-size:12px;padding:6px 14px">🔄 Cambio de turno</button>
       <button onclick="copiarSemanaAnterior()" class="btn-cyan">📋 Copiar semana anterior</button>
       <button class="btn-primary" onclick="guardarHorarios()">💾 Guardar horarios</button>
@@ -416,7 +417,7 @@ tr:hover td{background:rgba(204,0,0,0.03)}
   <div id="admin-retardos" style="display:none"><div class="card"><div class="filtros"><select id="fr-tienda" style="min-width:160px"><option value="">Todas las sucursales</option></select><input type="date" id="fr-desde"><input type="date" id="fr-hasta"><button onclick="renderRetardos()" class="no-print">Buscar</button><button class="btn-export no-print" onclick="exportarCSV('retardos')">⬇ CSV</button></div><div style="overflow-x:auto"><table><thead><tr><th>Fecha</th><th>Sucursal</th><th>Empleado</th><th>Entrada</th><th>Límite</th><th>Min tarde</th><th>Saldo a deber</th><th>Semana</th><th class="no-print">Marcar pagado</th><th class="no-print">Borrar</th></tr></thead><tbody id="tbody-ret"><tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div></div></div>
   <div id="admin-extras" style="display:none"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px"><div class="card-label" style="margin:0">Acumulados por empleado</div><div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print"><select id="fex-tienda" onchange="renderExtras()" style="width:auto;min-width:160px;padding:6px 10px;font-size:13px"><option value="">Todas las sucursales</option></select><button class="btn-export" onclick="exportarCSV('extras')">⬇ CSV</button><button onclick="renderExtras()" style="font-size:12px;padding:5px 10px">↻</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Sucursal</th><th>Empleado</th><th>Min extras</th><th>Min comida exceso</th><th class="no-print">Editar extras</th><th class="no-print">Editar comida</th><th class="no-print">Reset</th></tr></thead><tbody id="tbody-extras"><tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div></div></div>
   <div id="admin-sanciones" style="display:none"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px"><div class="card-label" style="margin:0">Sanciones</div><div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print"><select id="fsan-tienda" onchange="renderSanciones()" style="width:auto;min-width:160px;padding:6px 10px;font-size:13px"><option value="">Todas las sucursales</option></select><button class="btn-export" onclick="exportarCSV('sanciones')">⬇ CSV</button><button onclick="renderSanciones()" style="font-size:12px;padding:5px 10px">↻</button></div></div><div id="lista-sanciones"><div style="font-size:13px;color:var(--text3)">Cargando...</div></div></div></div>
-  <div id="admin-horarios" style="display:none"><div class="card"><div class="filtros" style="margin-bottom:1rem"><select id="fh-tienda" onchange="renderHorariosAdmin()" style="min-width:160px"><option value="">— Selecciona sucursal —</option></select><div class="semana-nav" style="flex:1"><button onclick="navSemanaAdmin(-1)" style="padding:5px 10px">◀</button><div class="semana-lbl" id="lbl-semana-admin"></div><button onclick="navSemanaAdmin(1)" style="padding:5px 10px">▶</button></div></div><div class="cal-grid" id="cal-dias-admin" style="margin-bottom:1rem"></div><div id="admin-tabla-horarios"><div style="font-size:13px;color:var(--text3)">Selecciona una sucursal.</div></div><div style="margin-top:1rem;display:flex;gap:8px;justify-content:flex-end" class="no-print"><button onclick="copiarSemanaAdmin()" class="btn-cyan">📋 Copiar semana anterior</button><button class="btn-primary" onclick="guardarHorariosAdmin()">💾 Guardar</button></div><div id="admin-hor-msg" style="font-size:12px;margin-top:8px;display:none"></div></div></div>
+  <div id="admin-horarios" style="display:none"><div class="card"><div class="filtros" style="margin-bottom:1rem"><select id="fh-tienda" onchange="renderHorariosAdmin()" style="min-width:160px"><option value="">— Selecciona sucursal —</option></select><div class="semana-nav" style="flex:1"><button onclick="navSemanaAdmin(-1)" style="padding:5px 10px">◀</button><div class="semana-lbl" id="lbl-semana-admin"></div><button onclick="navSemanaAdmin(1)" style="padding:5px 10px">▶</button></div><button class="btn-cyan no-print" onclick="abrirModalTurnoNuevo(document.getElementById('fh-tienda').value)" style="font-size:12px;padding:6px 14px">➕ Turno</button></div><div class="cal-grid" id="cal-dias-admin" style="margin-bottom:1rem"></div><div id="admin-tabla-horarios"><div style="font-size:13px;color:var(--text3)">Selecciona una sucursal.</div></div><div style="margin-top:1rem;display:flex;gap:8px;justify-content:flex-end" class="no-print"><button onclick="copiarSemanaAdmin()" class="btn-cyan">📋 Copiar semana anterior</button><button class="btn-primary" onclick="guardarHorariosAdmin()">💾 Guardar</button></div><div id="admin-hor-msg" style="font-size:12px;margin-top:8px;display:none"></div></div></div>
   <div id="admin-empleados" style="display:none"><div class="card"><div class="card-label">Sucursal</div><select id="cfg-tienda" onchange="renderCfgEmps()" style="margin-bottom:1rem"><option value="">— Selecciona —</option></select><div id="cfg-lista" style="margin-bottom:1rem;font-size:13px"></div><div id="cfg-form" style="display:none"><div class="card-label">Nuevo empleado</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><input type="text" id="cfg-nombre" placeholder="Nombre completo"><input type="text" id="cfg-clave" placeholder="Clave numérica"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px"><input type="text" id="cfg-puesto" placeholder="Puesto"><input type="time" id="cfg-hora-entrada" value="09:30"><input type="time" id="cfg-hora-salida" value="19:30"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px"><select id="cfg-descanso"><option value="lunes">Desc: Lunes</option><option value="martes">Desc: Martes</option><option value="miercoles">Desc: Miércoles</option><option value="jueves">Desc: Jueves</option><option value="viernes">Desc: Viernes</option><option value="sabado">Desc: Sábado</option><option value="domingo" selected>Desc: Domingo</option></select><input type="number" id="cfg-min-comida" placeholder="Min comida" min="0" max="180" value="60"><input type="text" id="cfg-clave-enc" placeholder="Clave encargado"></div><div style="display:flex;gap:8px;margin-bottom:8px;align-items:center"><label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="cfg-encargado" style="width:auto;padding:0;accent-color:var(--accent)"> Es encargado</label></div><div style="display:flex;justify-content:flex-end"><button class="btn-primary" onclick="agregarEmp()">+ Agregar</button></div><div id="cfg-msg" style="font-size:12px;margin-top:8px;display:none"></div></div></div></div>
   <div id="admin-visitas" style="display:none"><div class="card"><p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.7;background:var(--bg3);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border)">Sin permiso → Clave incorrecta en otra tienda. Permiso abierto hasta cancelarlo.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><div class="card-label">Empleado (origen)</div><select id="v-origen" onchange="renderVisitaEmps()" style="margin-bottom:8px"><option value="">— Selecciona —</option></select><select id="v-emp"><option value="">— Empleado —</option></select></div><div><div class="card-label">Puede checar en</div><select id="v-destino"><option value="">— Destino —</option></select></div></div><div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem"><button class="btn-primary" onclick="agregarVisita()">+ Autorizar</button></div><div class="card-label">Permisos activos</div><div id="lista-visitas"><div style="font-size:13px;color:var(--text3)">Cargando...</div></div></div></div>
   <div id="admin-seguridad" style="display:none"><div class="card"><div class="card-label">Log de accesos al sistema</div><div class="filtros"><select id="flog-tipo" style="min-width:130px"><option value="">Todos</option><option value="admin">Admin</option><option value="encargado">Encargado</option><option value="empleado">Empleado</option></select><input type="date" id="flog-fecha"><button onclick="renderLog()" class="no-print">Buscar</button><button onclick="renderLog()" style="font-size:12px;padding:5px 10px" class="no-print">↻</button></div><div style="overflow-x:auto"><table><thead><tr><th>Fecha/Hora</th><th>Tipo</th><th>Tienda</th><th>Resultado</th></tr></thead><tbody id="tbody-log"><tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div></div></div>
@@ -485,6 +486,36 @@ tr:hover td{background:rgba(204,0,0,0.03)}
       <div style="overflow-x:auto"><table><thead><tr>
         <th>Sucursal</th><th>Empleado</th><th>Turno nuevo</th><th>Desde</th><th>Hasta</th><th>Duración</th><th>Motivo</th><th>Estado</th><th class="no-print">Acción</th>
       </tr></thead><tbody id="tbody-turnos"><tr><td colspan="9" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- MODAL NUEVO TURNO PREDETERMINADO -->
+  <div class="modal-overlay" id="modal-turno-nuevo">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-title">➕ Nuevo turno predeterminado</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:1rem">Mínimo 8h 30min de trabajo. Se agrega a la lista de turnos de esta tienda.</div>
+      <div style="display:grid;gap:10px">
+        <div>
+          <div class="card-label">Nombre del turno</div>
+          <input type="text" id="nturno-nombre" placeholder="Ej: 3er turno, Turno especial...">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><div class="card-label">Hora entrada</div><input type="time" id="nturno-entrada" oninput="calcPreviewTurno()"></div>
+          <div><div class="card-label">Hora salida</div><input type="time" id="nturno-salida" oninput="calcPreviewTurno()"></div>
+        </div>
+        <div>
+          <div class="card-label">Tiempo de comida</div>
+          <select id="nturno-comida" onchange="calcPreviewTurno()">
+            <option value="60">1 hora</option><option value="90">1:30 hrs</option><option value="120">2 horas</option>
+          </select>
+        </div>
+        <div id="nturno-preview" style="font-size:12px;padding:8px 12px;background:var(--bg3);border-radius:8px;color:var(--text2)">Ingresa las horas para calcular</div>
+        <div id="nturno-err" style="font-size:12px;color:var(--elite-red);display:none"></div>
+      </div>
+      <div class="modal-actions">
+        <button onclick="cerrarModal('modal-turno-nuevo')">Cancelar</button>
+        <button class="btn-primary" onclick="guardarNuevoTurnoPred()">Agregar turno</button>
+      </div>
     </div>
   </div>
 
@@ -815,9 +846,11 @@ async function confirmar(){
     if(!emp){intentosClave++;await logAcceso('empleado',tiendaActual,false);if(intentosClave>=5){iniciarBloqueo(5);resetClave();return;}mostrarResultado('❌','CLAVE INCORRECTA','','Intentos restantes: '+(5-intentosClave),'err');resetClave();return;}
     intentosClave=0;await logAcceso('empleado',tiendaActual,true);
     const semana=lunesStr(0);
-    const fechaHoy=horaClaveReg?new Date().toLocaleDateString('sv'):hoy();
+    const fechaHoy=hoy();
+    // Para visitas buscar horarios en tienda origen, para locales en tienda actual
+    const tiendaHorario=esVisita?(emp.tienda||emp.tienda_origen||tiendaActual):tiendaActual;
     const [hors,cambioActivo]=await Promise.all([
-      GET('horarios_semana','select=*&tienda=eq.'+tiendaActual+'&empleado_clave=eq.'+clave+'&semana_inicio=eq.'+semana),
+      GET('horarios_semana','select=*&tienda=eq.'+tiendaHorario+'&empleado_clave=eq.'+clave+'&semana_inicio=eq.'+semana),
       obtenerTurnoActivo(clave,fechaHoy)
     ]);
     // Cambio temporal tiene prioridad sobre horario semanal
@@ -837,6 +870,17 @@ async function confirmar(){
       emp._turno_inventario=hors[0].turno==='Inventario'||false;
     }
     empActual={...emp,esVisita};
+    // Verificar si ya checó ese tipo hoy (buscar en ambas tiendas para visitas)
+    const f=hoy();
+    const yaCheco=await GET('registros',
+      'select=id&empleado=eq.'+encodeURIComponent(emp.nombre)
+      +'&tipo=eq.'+_tipoGuardado
+      +'&ts=gte.'+f+'T00:00:00&ts=lte.'+f+'T23:59:59&limit=1'
+    );
+    if(yaCheco.length){
+      mostrarResultado('⚠️','YA REGISTRADO','',emp.nombre+'\nYa checaste "'+_tipoGuardado.replace(/-/g,' ')+'" hoy.','warn');
+      resetClave();return;
+    }
     const sancs=await GET('sanciones','select=*&empleado_clave=eq.'+clave+'&cumplida=eq.false');
     document.getElementById('sancion-activa').style.display=sancs.length?'flex':'none';
     if(sancs.length)document.getElementById('sancion-txt').textContent=sancs.length+' sanción(es) pendiente(s) — Mañana quedarse apertura a cierre';
@@ -1046,10 +1090,50 @@ async function cargarHoy(){
   if(!tiendaActual){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text3)">Selecciona una sucursal.</td></tr>';return;}
   const f=hoy();
   try{
-    const regs=await GET('registros','select=*&tienda=eq.'+tiendaActual+'&ts=gte.'+f+'T00:00:00&ts=lte.'+f+'T23:59:59&order=ts.desc');
-    if(!regs.length){tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text3)">Sin registros hoy.</td></tr>';return;}
-    tb.innerHTML=regs.map(r=>'<tr><td style="color:var(--text);font-weight:600">'+r.empleado+(r.es_visita?'<span class="badge-visita">visita</span>':'')+'</td><td><span class="badge '+(bCls[r.tipo]||'')+'">'+r.tipo.replace(/-/g,' ')+'</span></td><td>'+(r.estado_huella==='completo'?'<span style="color:var(--green)">✅</span>':'<span style="color:var(--amber)">⚠️</span>')+'</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text2)">'+fmtH(r.ts)+'</td></tr>').join('');
-  }catch{tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--red);padding:1rem">Error al cargar.</td></tr>';}
+    // Usar rango amplio para capturar todos los registros del día en cualquier zona horaria
+    const regs=await GET('registros',
+      'select=*&tienda=eq.'+tiendaActual
+      +'&ts=gte.'+f+'T00:00:00-06:00'
+      +'&ts=lte.'+f+'T23:59:59-06:00'
+      +'&order=ts.desc&limit=200'
+    );
+    if(!regs.length){
+      // Fallback: buscar sin filtro de hora exacto
+      const regs2=await GET('registros',
+        'select=*&tienda=eq.'+tiendaActual+'&order=ts.desc&limit=50'
+      );
+      const hoyRegs=regs2.filter(r=>{
+        const d=new Date(r.ts);
+        const fechaReg=d.toLocaleDateString('sv',{timeZone:'America/Mexico_City'});
+        return fechaReg===f;
+      });
+      if(!hoyRegs.length){
+        tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text3)">Sin registros hoy.</td></tr>';
+        return;
+      }
+      renderFilaHoy(tb,hoyRegs);
+      return;
+    }
+    renderFilaHoy(tb,regs);
+  }catch(e){tb.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--red);padding:1rem">Error: '+e.message+'</td></tr>';}
+}
+function renderFilaHoy(tb,regs){
+  const bCls={
+    'entrada':'badge-entrada','salida':'badge-salida',
+    'entrada-comida':'badge-ent-com','salida-comida':'badge-sal-com'
+  };
+  tb.innerHTML=regs.map(r=>{
+    const esInventario=r.etiqueta==='inventario';
+    const tipoLabel=esInventario?'📦 inventario':r.tipo.replace(/-/g,' ');
+    const tipoCls=esInventario?'badge-ent-com':bCls[r.tipo]||'';
+    const huellaOk=r.huella_ok===true||r.estado_huella==='completo';
+    return'<tr>'
+      +'<td style="color:var(--text);font-weight:600">'+r.empleado+(r.es_visita||r.origen==='visita'?'<span class="badge-visita">visita</span>':'')+'</td>'
+      +'<td><span class="badge '+tipoCls+'">'+tipoLabel+'</span></td>'
+      +'<td>'+(huellaOk?'<span style="color:var(--green)">✅</span>':'<span style="color:var(--amber)">⚠️</span>')+'</td>'
+      +'<td style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text2)">'+fmtH(r.ts)+'</td>'
+      +'</tr>';
+  }).join('');
 }
 async function consultarMisTiempos(){
   const claveV=document.getElementById('inp-clave-ret').value.trim(),desde=document.getElementById('ret-desde').value,hasta=document.getElementById('ret-hasta').value;
@@ -1163,6 +1247,12 @@ async function cargarEditorHorarios(){
   if(!el)return;
   el.innerHTML='<div style="font-size:13px;color:var(--text3)">Cargando...</div>';horariosEditados={};
   try{
+    // Auto-cancelar cambios temporales expirados
+    const hoyStr=hoy();
+    GET('cambios_turno','select=id&cancelado=eq.false&fecha_fin=lt.'+hoyStr+'&tienda=eq.'+tienda).then(async expirados=>{
+      for(const ex of expirados) await PATCH('cambios_turno',{cancelado:true},'id=eq.'+ex.id);
+    }).catch(()=>{});
+
     const [emps,hors,turnos]=await Promise.all([
       GET('empleados','select=*&tienda=eq.'+tienda+'&order=nombre'),
       GET('horarios_semana','select=*&tienda=eq.'+tienda+'&semana_inicio=eq.'+semana),
@@ -1212,8 +1302,8 @@ async function cargarEditorHorarios(){
             </div>
             <!-- Panel horario personalizado -->
             <div id="panel-custom-${e.clave}" style="display:none;margin-top:8px;padding:12px;background:#fffbeb;border:1px solid rgba(180,83,9,0.25);border-radius:var(--radius-sm)">
-              <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:8px">✏️ HORARIO PERSONALIZADO</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end">
+              <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:8px">✏️ HORARIO PERSONALIZADO — ${e.nombre}</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
                 <div>
                   <div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:4px">ENTRADA</div>
                   <input type="time" id="custom-ent-${e.clave}" value="${h.hora_entrada}" style="padding:6px 10px;font-size:13px">
@@ -1230,7 +1320,31 @@ async function cargarEditorHorarios(){
                     <option value="120" ${h.minutos_comida===120?'selected':''}>2 horas</option>
                   </select>
                 </div>
-                <button onclick="aplicarHorarioPersonalizado('${e.clave}')" class="btn-primary" style="font-size:12px;padding:6px 12px;white-space:nowrap">✓ Aplicar</button>
+              </div>
+              <div id="custom-extras-disp-${e.clave}" style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:8px 10px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)">Cargando extras disponibles...</div>
+              <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:4px">VIGENCIA DEL CAMBIO</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+                <div>
+                  <div style="font-size:10px;color:var(--text3);margin-bottom:3px">TIPO</div>
+                  <select id="custom-vig-${e.clave}" onchange="toggleCustomFecha('${e.clave}')" style="padding:6px 10px;font-size:12px">
+                    <option value="semana">Esta semana (horario semanal)</option>
+                    <option value="1dia">Solo 1 día (cambio temporal)</option>
+                    <option value="rango">Rango de días</option>
+                    <option value="permanente">Permanente</option>
+                  </select>
+                </div>
+                <div id="custom-fecha-wrap-${e.clave}">
+                  <div style="font-size:10px;color:var(--text3);margin-bottom:3px">DESDE</div>
+                  <input type="date" id="custom-desde-${e.clave}" value="${hoy()}" style="padding:6px 10px;font-size:12px">
+                </div>
+              </div>
+              <div id="custom-hasta-wrap-${e.clave}" style="display:none;margin-bottom:10px">
+                <div style="font-size:10px;color:var(--text3);margin-bottom:3px">HASTA</div>
+                <input type="date" id="custom-hasta-${e.clave}" value="${hoy()}" style="padding:6px 10px;font-size:12px">
+              </div>
+              <div style="display:flex;gap:8px">
+                <button onclick="aplicarHorarioPersonalizado('${e.clave}','${e.nombre.replace(/'/g,"\\'")}','${tienda}')" class="btn-primary" style="font-size:12px;padding:6px 14px">✓ Aplicar</button>
+                <button onclick="document.getElementById('panel-custom-${e.clave}').style.display='none'" style="font-size:12px;padding:6px 12px">Cancelar</button>
               </div>
             </div>
             <div style="margin-top:6px">
@@ -1302,7 +1416,19 @@ function editHorarioTurno(clave,valor){
   const parts=valor.split('|');
   if(parts[0]==='custom'){
     const panel=document.getElementById('panel-custom-'+clave);
-    if(panel)panel.style.display=panel.style.display==='none'?'block':'none';
+    if(panel){
+      panel.style.display=panel.style.display==='none'?'block':'none';
+      // Cargar extras disponibles
+      if(panel.style.display==='block'){
+        GET('acumulados','select=minutos_extras&empleado_clave=eq.'+clave).then(ac=>{
+          const mins=ac.length?ac[0].minutos_extras:0;
+          const el=document.getElementById('custom-extras-disp-'+clave);
+          if(el)el.innerHTML=mins>0
+            ?'⭐ Extras disponibles: <strong style="color:var(--green)">'+Math.floor(mins/60)+'h '+(mins%60)+'min ('+mins+' min)</strong> — puede reducir su jornada con estos minutos'
+            :'Sin horas extras acumuladas';
+        }).catch(()=>{});
+      }
+    }
     return;
   }
   const hora_entrada=parts[0],hora_salida=parts[1],minutos_comida=parseInt(parts[2]),esApertura=parts[3]==='1',esInventario=(parts[4]||'0')==='1';
@@ -1321,10 +1447,29 @@ function editHorarioTurno(clave,valor){
     ?'<span style="color:var(--cyan);font-weight:600">📦 Inventario — Solo registro · Sin retardos · Sin extras</span>'
     :'Entrada: <strong style="color:var(--text)">'+hora_entrada+'</strong> · Salida: <strong style="color:var(--text)">'+hora_salida+'</strong>';
 }
-function aplicarHorarioPersonalizado(clave){
+
+function toggleCustomFecha(clave){
+  const vig=document.getElementById('custom-vig-'+clave)?.value;
+  const fechaWrap=document.getElementById('custom-fecha-wrap-'+clave);
+  const hastaWrap=document.getElementById('custom-hasta-wrap-'+clave);
+  if(vig==='semana'||vig==='permanente'){
+    if(fechaWrap)fechaWrap.style.display='none';
+    if(hastaWrap)hastaWrap.style.display='none';
+  }else if(vig==='1dia'){
+    if(fechaWrap)fechaWrap.style.display='block';
+    if(hastaWrap)hastaWrap.style.display='none';
+  }else if(vig==='rango'){
+    if(fechaWrap)fechaWrap.style.display='block';
+    if(hastaWrap)hastaWrap.style.display='block';
+  }
+}
+async function aplicarHorarioPersonalizado(clave,nombre,tienda){
   const ent=document.getElementById('custom-ent-'+clave)?.value;
   const sal=document.getElementById('custom-sal-'+clave)?.value;
   const com=parseInt(document.getElementById('custom-com-'+clave)?.value||60);
+  const vig=document.getElementById('custom-vig-'+clave)?.value||'semana';
+  const desde=document.getElementById('custom-desde-'+clave)?.value||hoy();
+  const hasta=document.getElementById('custom-hasta-'+clave)?.value||desde;
   if(!ent||!sal){alert('Ingresa hora de entrada y salida');return;}
   if(!horariosEditados[clave])horariosEditados[clave]={};
   horariosEditados[clave].hora_entrada=ent;
@@ -1332,10 +1477,32 @@ function aplicarHorarioPersonalizado(clave){
   horariosEditados[clave].minutos_comida=com;
   horariosEditados[clave].es_encargado_turno=false;
   horariosEditados[clave]._turno_inventario=false;
+  // Si es cambio temporal (no semana completa) → guardar en cambios_turno
+  if(vig!=='semana'){
+    try{
+      await POST('cambios_turno',{
+        empleado_clave:clave,empleado_nombre:nombre,tienda,
+        turno_nuevo:'Personalizado '+ent+'-'+sal,
+        hora_entrada:ent,hora_salida:sal,minutos_comida:com,
+        es_encargado_turno:false,
+        fecha_inicio:vig==='permanente'?hoy():desde,
+        fecha_fin:vig==='permanente'?null:(vig==='1dia'?desde:hasta),
+        duracion:vig,motivo:'Horario personalizado',
+        cancelado:false,
+        creado_por:tiendaEncargado?'encargado':'admin'
+      });
+      if((vig==='1dia'||vig==='rango')&&desde===hoy()){
+        await cancelarRetardosDia(clave,hoy(),'Personalizado '+ent+'-'+sal);
+      }
+    }catch(e){console.error('cambio_turno:',e);}
+  }
   const panel=document.getElementById('panel-custom-'+clave);
   if(panel)panel.style.display='none';
   const infoEl=document.getElementById('info-turno-'+clave);
-  if(infoEl)infoEl.innerHTML='✏️ Personalizado — Entrada: <strong style="color:var(--text)">'+ent+'</strong> · Salida: <strong style="color:var(--text)">'+sal+'</strong>';
+  if(infoEl){
+    const vigLabel={'1dia':'1 día','rango':'Rango','permanente':'Permanente'}[vig]||vig;
+    infoEl.innerHTML='✏️ Personalizado — Entrada: <strong style="color:var(--text)">'+ent+'</strong> · Salida: <strong style="color:var(--text)">'+sal+'</strong>'+(vig!=='semana'?' <span style="font-size:10px;color:var(--cyan)">('+vigLabel+')</span>':'');
+  }
 }
 function editHorario(clave,campo,valor){if(!horariosEditados[clave])horariosEditados[clave]={};horariosEditados[clave][campo]=valor;}
 async function guardarHorarios(){
@@ -1743,7 +1910,66 @@ async function obtenerTemplateEmpleado(clave){
     return h.length?h[0].template:null;
   }catch{return null;}
 }
-// ── CAMBIOS DE TURNO ─────────────────────────────────
+// ── NUEVO TURNO PREDETERMINADO ──────────────────────
+let _tiendaTurnoNuevo='';
+function abrirModalTurnoNuevo(tienda){
+  _tiendaTurnoNuevo=tienda||document.getElementById('fh-tienda')?.value||'';
+  document.getElementById('nturno-nombre').value='';
+  document.getElementById('nturno-entrada').value='';
+  document.getElementById('nturno-salida').value='';
+  document.getElementById('nturno-comida').value='60';
+  document.getElementById('nturno-preview').textContent='Ingresa las horas para calcular';
+  document.getElementById('nturno-err').style.display='none';
+  document.getElementById('modal-turno-nuevo').classList.add('open');
+}
+function calcPreviewTurno(){
+  const ent=document.getElementById('nturno-entrada').value;
+  const sal=document.getElementById('nturno-salida').value;
+  const com=parseInt(document.getElementById('nturno-comida').value||60);
+  const prev=document.getElementById('nturno-preview');
+  const errEl=document.getElementById('nturno-err');
+  if(!ent||!sal){prev.textContent='Ingresa las horas para calcular';return;}
+  const[eh,em]=ent.split(':').map(Number);
+  const[sh,sm]=sal.split(':').map(Number);
+  let mins=(sh*60+sm)-(eh*60+em)-com;
+  if(mins<0)mins+=24*60;
+  const h=Math.floor(mins/60),m=mins%60;
+  const cumple=mins>=510;
+  prev.innerHTML=`Jornada laboral: <strong style="color:${cumple?'var(--green)':'var(--elite-red)'}">${h}h ${m}min</strong>`
+    +` (${cumple?'✓ Cumple el mínimo de 8h 30min':'✗ No cumple el mínimo de 8h 30min'})`;
+  errEl.style.display=cumple?'none':'block';
+  errEl.textContent='El turno debe tener mínimo 8 horas 30 minutos de jornada laboral.';
+}
+async function guardarNuevoTurnoPred(){
+  const nombre=document.getElementById('nturno-nombre').value.trim();
+  const ent=document.getElementById('nturno-entrada').value;
+  const sal=document.getElementById('nturno-salida').value;
+  const com=parseInt(document.getElementById('nturno-comida').value||60);
+  const errEl=document.getElementById('nturno-err');
+  errEl.style.display='none';
+  if(!nombre||!ent||!sal){errEl.textContent='Completa todos los campos.';errEl.style.display='block';return;}
+  // Validar mínimo 8:30
+  const[eh,em]=ent.split(':').map(Number);
+  const[sh,sm]=sal.split(':').map(Number);
+  let mins=(sh*60+sm)-(eh*60+em)-com;
+  if(mins<0)mins+=24*60;
+  if(mins<510){errEl.textContent='El turno debe tener mínimo 8h 30min de jornada laboral.';errEl.style.display='block';return;}
+  if(!_tiendaTurnoNuevo){errEl.textContent='No hay tienda seleccionada.';errEl.style.display='block';return;}
+  try{
+    await POST('horarios_permitidos',{
+      tienda:_tiendaTurnoNuevo,
+      turno:nombre,
+      hora_entrada:ent,
+      hora_salida:sal,
+      minutos_comida:com
+    });
+    cerrarModal('modal-turno-nuevo');
+    // Recargar editor
+    cargarEditorHorarios();
+    alert('✓ Turno "'+nombre+'" agregado correctamente para tienda '+_tiendaTurnoNuevo);
+  }catch(e){errEl.textContent='Error: '+e.message;errEl.style.display='block';}
+}
+// ── FIN NUEVO TURNO PREDETERMINADO ──────────────────
 async function renderTurnos(){
   const tb=document.getElementById('tbody-turnos');
   const tiendaF=document.getElementById('ftur-tienda')?.value||'';
