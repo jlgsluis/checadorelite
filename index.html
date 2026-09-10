@@ -230,7 +230,50 @@ tr:hover td{background:rgba(204,0,0,0.03)}
     </div>
   </div>
 </div>
-<!-- Modal registro huella -->
+<!-- Modal uso de extras -->
+<div class="modal-overlay" id="modal-uso-extras">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-title">⭐ Usar horas extras acumuladas</div>
+    <div id="uso-extras-disp" style="font-size:13px;padding:10px 14px;background:#f0fdf4;border-radius:8px;border:1px solid rgba(22,163,74,0.2);margin-bottom:1rem;color:var(--green);font-weight:600"></div>
+    <div style="display:grid;gap:10px">
+      <div>
+        <div class="card-label">Empleado</div>
+        <div id="uso-extras-nombre" style="font-size:14px;font-weight:700;color:var(--text);padding:8px 0"></div>
+      </div>
+      <div>
+        <div class="card-label">Fecha en que usará los extras</div>
+        <input type="date" id="uex-fecha">
+      </div>
+      <div>
+        <div class="card-label">¿Cómo usará sus extras?</div>
+        <select id="uex-tipo" onchange="calcUsoExtras()">
+          <option value="entrada_tarde">🕐 Llegar más tarde (entrada posterior)</option>
+          <option value="salida_temprana">🚪 Salir más temprano</option>
+          <option value="mas_comida">🍽️ Tomar más tiempo de comida</option>
+          <option value="retardo">✅ Cubrir retardo pendiente</option>
+          <option value="otro">📋 Otro motivo</option>
+        </select>
+      </div>
+      <div>
+        <div class="card-label">Minutos a usar</div>
+        <input type="number" id="uex-minutos" min="1" max="480" placeholder="Ej: 30" oninput="calcUsoExtras()">
+      </div>
+      <div id="uex-preview" style="font-size:12px;padding:10px 14px;background:var(--bg3);border-radius:8px;color:var(--text2);display:none"></div>
+      <div>
+        <div class="card-label">Notas (opcional)</div>
+        <input type="text" id="uex-nota" placeholder="Ej: permiso por cita médica...">
+      </div>
+      <div id="uex-err" style="font-size:12px;color:var(--elite-red);display:none"></div>
+    </div>
+    <div class="modal-actions">
+      <button onclick="cerrarModal('modal-uso-extras')">Cancelar</button>
+      <button class="btn-primary" onclick="confirmarUsoExtras()">✓ Confirmar uso</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal registro empleado mejorado -->
+
 <div id="modal-huella-reg" class="modal-overlay">
   <div class="modal" style="max-width:420px;text-align:center">
     <div style="font-size:48px;margin-bottom:1rem">🖐</div>
@@ -385,7 +428,7 @@ tr:hover td{background:rgba(204,0,0,0.03)}
     <div class="card-label">Asignar horarios de la semana</div>
     <div id="enc-tabla-horarios"><div style="font-size:13px;color:var(--text3)">Cargando...</div></div>
     <div style="margin-top:1rem;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap" class="no-print">
-      <button class="btn-cyan" onclick="abrirModalTurnoNuevo(tiendaEncargado)" style="font-size:12px;padding:6px 14px">➕ Agregar turno predeterminado</button>
+      <button class="btn-cyan" onclick="abrirModalTurnoNuevo(tiendaEncargado||tiendaActual)" style="font-size:12px;padding:6px 14px">➕ Agregar turno predeterminado</button>
       <button class="btn-cyan" onclick="abrirModalTurno(tiendaEncargado)" style="font-size:12px;padding:6px 14px">🔄 Cambio de turno</button>
       <button onclick="copiarSemanaAnterior()" class="btn-cyan">📋 Copiar semana anterior</button>
       <button class="btn-primary" onclick="guardarHorarios()">💾 Guardar horarios</button>
@@ -418,7 +461,28 @@ tr:hover td{background:rgba(204,0,0,0.03)}
   <div id="admin-extras" style="display:none"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px"><div class="card-label" style="margin:0">Acumulados por empleado</div><div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print"><select id="fex-tienda" onchange="renderExtras()" style="width:auto;min-width:160px;padding:6px 10px;font-size:13px"><option value="">Todas las sucursales</option></select><button class="btn-export" onclick="exportarCSV('extras')">⬇ CSV</button><button onclick="renderExtras()" style="font-size:12px;padding:5px 10px">↻</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Sucursal</th><th>Empleado</th><th>Min extras</th><th>Min comida exceso</th><th class="no-print">Editar extras</th><th class="no-print">Editar comida</th><th class="no-print">Reset</th></tr></thead><tbody id="tbody-extras"><tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div></div></div>
   <div id="admin-sanciones" style="display:none"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px"><div class="card-label" style="margin:0">Sanciones</div><div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print"><select id="fsan-tienda" onchange="renderSanciones()" style="width:auto;min-width:160px;padding:6px 10px;font-size:13px"><option value="">Todas las sucursales</option></select><button class="btn-export" onclick="exportarCSV('sanciones')">⬇ CSV</button><button onclick="renderSanciones()" style="font-size:12px;padding:5px 10px">↻</button></div></div><div id="lista-sanciones"><div style="font-size:13px;color:var(--text3)">Cargando...</div></div></div></div>
   <div id="admin-horarios" style="display:none"><div class="card"><div class="filtros" style="margin-bottom:1rem"><select id="fh-tienda" onchange="renderHorariosAdmin()" style="min-width:160px"><option value="">— Selecciona sucursal —</option></select><div class="semana-nav" style="flex:1"><button onclick="navSemanaAdmin(-1)" style="padding:5px 10px">◀</button><div class="semana-lbl" id="lbl-semana-admin"></div><button onclick="navSemanaAdmin(1)" style="padding:5px 10px">▶</button></div><button class="btn-cyan no-print" onclick="abrirModalTurnoNuevo(document.getElementById('fh-tienda').value)" style="font-size:12px;padding:6px 14px">➕ Turno</button></div><div class="cal-grid" id="cal-dias-admin" style="margin-bottom:1rem"></div><div id="admin-tabla-horarios"><div style="font-size:13px;color:var(--text3)">Selecciona una sucursal.</div></div><div style="margin-top:1rem;display:flex;gap:8px;justify-content:flex-end" class="no-print"><button onclick="copiarSemanaAdmin()" class="btn-cyan">📋 Copiar semana anterior</button><button class="btn-primary" onclick="guardarHorariosAdmin()">💾 Guardar</button></div><div id="admin-hor-msg" style="font-size:12px;margin-top:8px;display:none"></div></div></div>
-  <div id="admin-empleados" style="display:none"><div class="card"><div class="card-label">Sucursal</div><select id="cfg-tienda" onchange="renderCfgEmps()" style="margin-bottom:1rem"><option value="">— Selecciona —</option></select><div id="cfg-lista" style="margin-bottom:1rem;font-size:13px"></div><div id="cfg-form" style="display:none"><div class="card-label">Nuevo empleado</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><input type="text" id="cfg-nombre" placeholder="Nombre completo"><input type="text" id="cfg-clave" placeholder="Clave numérica"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px"><input type="text" id="cfg-puesto" placeholder="Puesto"><input type="time" id="cfg-hora-entrada" value="09:30"><input type="time" id="cfg-hora-salida" value="19:30"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px"><select id="cfg-descanso"><option value="lunes">Desc: Lunes</option><option value="martes">Desc: Martes</option><option value="miercoles">Desc: Miércoles</option><option value="jueves">Desc: Jueves</option><option value="viernes">Desc: Viernes</option><option value="sabado">Desc: Sábado</option><option value="domingo" selected>Desc: Domingo</option></select><input type="number" id="cfg-min-comida" placeholder="Min comida" min="0" max="180" value="60"><input type="text" id="cfg-clave-enc" placeholder="Clave encargado"></div><div style="display:flex;gap:8px;margin-bottom:8px;align-items:center"><label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="cfg-encargado" style="width:auto;padding:0;accent-color:var(--accent)"> Es encargado</label></div><div style="display:flex;justify-content:flex-end"><button class="btn-primary" onclick="agregarEmp()">+ Agregar</button></div><div id="cfg-msg" style="font-size:12px;margin-top:8px;display:none"></div></div></div></div>
+  <div id="admin-empleados" style="display:none"><div class="card"><div class="card-label">Sucursal</div><select id="cfg-tienda" onchange="renderCfgEmps()" style="margin-bottom:1rem"><option value="">— Selecciona —</option></select><div id="cfg-lista" style="margin-bottom:1rem;font-size:13px"></div><div id="cfg-form" style="display:none"><div class="card-label">Nuevo empleado</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><input type="text" id="cfg-nombre" placeholder="Nombre completo"><input type="text" id="cfg-clave" placeholder="Clave numérica"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px"><input type="text" id="cfg-puesto" placeholder="Puesto"><input type="time" id="cfg-hora-entrada" value="09:30"><input type="time" id="cfg-hora-salida" value="19:30"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px"><select id="cfg-descanso"><option value="lunes">Desc: Lunes</option><option value="martes">Desc: Martes</option><option value="miercoles">Desc: Miércoles</option><option value="jueves">Desc: Jueves</option><option value="viernes">Desc: Viernes</option><option value="sabado">Desc: Sábado</option><option value="domingo" selected>Desc: Domingo</option></select><input type="number" id="cfg-min-comida" placeholder="Min comida" min="0" max="180" value="60"><input type="text" id="cfg-clave-enc" placeholder="Clave encargado"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+    <div>
+      <div class="card-label" style="margin-bottom:4px">Tipo de contrato</div>
+      <select id="cfg-contrato" onchange="toggleDiasLaborales()">
+        <option value="regular">Regular (tiempo completo)</option>
+        <option value="estudiante">Estudiante (días específicos)</option>
+        <option value="temporal">Temporal</option>
+        <option value="medio_tiempo">Medio tiempo</option>
+      </select>
+    </div>
+    <div>
+      <div class="card-label" style="margin-bottom:4px">Notas</div>
+      <input type="text" id="cfg-notas" placeholder="Ej: Estudia por las mañanas...">
+    </div>
+  </div>
+  <div id="cfg-dias-wrap" style="display:none;margin-bottom:8px">
+    <div class="card-label" style="margin-bottom:6px">Días que trabaja</div>
+    <div id="cfg-dias-selector" style="padding:8px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)"></div>
+    <input type="hidden" id="cfg-dias-valor" value="lun,mar,mie,jue,vie">
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center"><label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="cfg-encargado" style="width:auto;padding:0;accent-color:var(--accent)"> Es encargado</label></div><div style="display:flex;justify-content:flex-end"><button class="btn-primary" onclick="agregarEmp()">+ Agregar</button></div><div id="cfg-msg" style="font-size:12px;margin-top:8px;display:none"></div></div></div></div>
   <div id="admin-visitas" style="display:none"><div class="card"><p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.7;background:var(--bg3);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border)">Sin permiso → Clave incorrecta en otra tienda. Permiso abierto hasta cancelarlo.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><div class="card-label">Empleado (origen)</div><select id="v-origen" onchange="renderVisitaEmps()" style="margin-bottom:8px"><option value="">— Selecciona —</option></select><select id="v-emp"><option value="">— Empleado —</option></select></div><div><div class="card-label">Puede checar en</div><select id="v-destino"><option value="">— Destino —</option></select></div></div><div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem"><button class="btn-primary" onclick="agregarVisita()">+ Autorizar</button></div><div class="card-label">Permisos activos</div><div id="lista-visitas"><div style="font-size:13px;color:var(--text3)">Cargando...</div></div></div></div>
   <div id="admin-seguridad" style="display:none"><div class="card"><div class="card-label">Log de accesos al sistema</div><div class="filtros"><select id="flog-tipo" style="min-width:130px"><option value="">Todos</option><option value="admin">Admin</option><option value="encargado">Encargado</option><option value="empleado">Empleado</option></select><input type="date" id="flog-fecha"><button onclick="renderLog()" class="no-print">Buscar</button><button onclick="renderLog()" style="font-size:12px;padding:5px 10px" class="no-print">↻</button></div><div style="overflow-x:auto"><table><thead><tr><th>Fecha/Hora</th><th>Tipo</th><th>Tienda</th><th>Resultado</th></tr></thead><tbody id="tbody-log"><tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text3)">Cargando...</td></tr></tbody></table></div></div></div>
   <div id="admin-huellas" style="display:none"><div class="card">
@@ -1760,17 +1824,94 @@ async function borrarAlertaEnc(id){if(!confirm('¿Borrar esta alerta?'))return;t
 async function marcarCumplida(id){if(!confirm('¿Marcar como cumplida?'))return;try{await PATCH('sanciones',{cumplida:true,fecha_cumplida:new Date().toISOString()},'id=eq.'+id);renderSanciones();}catch(e){alert('Error: '+e.message);}}
 async function borrarSancion(id){if(!confirm('¿Borrar esta sanción?'))return;try{await DEL('sanciones','id=eq.'+id);renderSanciones();}catch(e){alert('Error: '+e.message);}}
 async function renderCfgEmps(){
-  const num=document.getElementById('cfg-tienda').value,form=document.getElementById('cfg-form'),lista=document.getElementById('cfg-lista');
-  if(!num){form.style.display='none';lista.innerHTML='';return;}form.style.display='block';lista.innerHTML='<div style="color:var(--text3);font-size:13px">Cargando...</div>';
-  try{const emps=await GET('empleados','select=*&tienda=eq.'+num+'&order=nombre');if(!emps.length){lista.innerHTML='<div style="color:var(--text3);margin-bottom:8px;font-size:13px">Sin empleados.</div>';return;}lista.innerHTML=emps.map(e=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;gap:8px;flex-wrap:wrap"><span style="color:var(--text);font-weight:600">'+e.nombre+(e.puesto?' <span style="color:var(--text3);font-size:12px">('+e.puesto+')</span>':'')+(e.encargado?' <span style="font-size:10px;padding:1px 6px;border-radius:4px;background:var(--cyan-bg);color:var(--cyan);margin-left:4px">Enc.</span>':'')+' <span style="font-family:\'DM Mono\',monospace;font-size:11px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:2px 6px;margin-left:4px">'+e.clave+'</span><span style="font-size:11px;color:var(--text3)"> ▶'+(e.hora_limite||'09:30')+' ◀'+(e.hora_salida||'19:30')+' 🍽'+(e.minutos_comida||60)+'min</span></span><div style="display:flex;gap:6px" class="no-print"><button onclick="abrirEditar(\''+e.id+'\',\''+e.nombre+'\',\''+e.clave+'\',\''+(e.puesto||'')+'\',\''+(e.hora_limite||'09:30')+'\',\''+(e.hora_salida||'19:30')+'\',\''+(e.dia_descanso||'domingo')+'\','+(e.minutos_comida||60)+',\''+(e.clave_encargado||'')+'\')" style="font-size:11px;padding:2px 8px">✏️</button><button class="btn-danger" onclick="borrarEmp(\''+e.id+'\',\''+e.clave+'\',\''+e.nombre+'\')">Borrar</button></div></div>').join('');}catch{lista.innerHTML='<div style="color:var(--red);font-size:13px">Error.</div>';}
+  const num=document.getElementById('cfg-tienda').value;
+  const form=document.getElementById('cfg-form');
+  const lista=document.getElementById('cfg-lista');
+  if(!num){form.style.display='none';lista.innerHTML='';return;}
+  form.style.display='block';
+  lista.innerHTML='<div style="color:var(--text3);font-size:13px">Cargando...</div>';
+  try{
+    const emps=await GET('empleados','select=*&tienda=eq.'+num+'&order=nombre');
+    if(!emps.length){lista.innerHTML='<div style="color:var(--text3);margin-bottom:8px;font-size:13px">Sin empleados en esta tienda.</div>';return;}
+    const contratoLabels={'regular':'Regular','estudiante':'Estudiante','temporal':'Temporal','medio_tiempo':'Medio tiempo'};
+    const contratoBg={'regular':'','estudiante':'background:#eff6ff;color:var(--cyan)','temporal':'background:#fffbeb;color:var(--amber)','medio_tiempo':'background:#f5f3ff;color:var(--purple)'};
+    lista.innerHTML=emps.map(e=>{
+      const contrato=e.tipo_contrato||'regular';
+      const badgeContrato=contrato!=='regular'
+        ?'<span style="font-size:10px;padding:1px 7px;border-radius:4px;margin-left:4px;'+contratoBg[contrato]+';font-weight:600">'+contratoLabels[contrato]+'</span>'
+        :'';
+      const diasStr=e.dias_laborales&&contrato!=='regular'
+        ?'<span style="font-size:10px;color:var(--text3);margin-left:6px">📅 '+e.dias_laborales.split(',').join(' · ')+'</span>'
+        :'';
+      const notaStr=e.notas?'<div style="font-size:11px;color:var(--text3);margin-top:2px">📝 '+e.notas+'</div>':'';
+      return'<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">'
+        +'<span style="color:var(--text);font-weight:600">'+e.nombre
+        +(e.puesto?' <span style="color:var(--text3);font-size:12px">('+e.puesto+')</span>':'')
+        +(e.encargado?' <span style="font-size:10px;padding:1px 6px;border-radius:4px;background:var(--cyan-bg);color:var(--cyan);margin-left:4px">Enc.</span>':'')
+        +badgeContrato
+        +' <span style="font-family:\'DM Mono\',monospace;font-size:11px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 6px;margin-left:4px">'+e.clave+'</span>'
+        +'<span style="font-size:11px;color:var(--text3)"> ▶'+(e.hora_limite||'09:30')+' ◀'+(e.hora_salida||'19:30')+' 🍽'+(e.minutos_comida||60)+'min</span>'
+        +diasStr+'</span>'
+        +'<div style="display:flex;gap:6px" class="no-print">'
+        +'<button onclick="abrirEditar(\''+e.id+'\',\''+e.nombre.replace(/'/g,"\\'")+'\',\''+e.clave+'\',\''+(e.puesto||'')+'\',\''+(e.hora_limite||'09:30')+'\',\''+(e.hora_salida||'19:30')+'\',\''+(e.dia_descanso||'domingo')+'\','+(e.minutos_comida||60)+',\''+(e.clave_encargado||'')+'\')" style="font-size:11px;padding:2px 8px">✏️</button>'
+        +'<button class="btn-danger" onclick="borrarEmp(\''+e.id+'\',\''+e.clave+'\',\''+e.nombre+'\')">Borrar</button>'
+        +'</div></div>'+notaStr+'</div>';
+    }).join('');
+  }catch(e){lista.innerHTML='<div style="color:var(--red);font-size:13px">Error: '+e.message+'</div>';}
 }
 async function agregarEmp(){
-  const num=document.getElementById('cfg-tienda').value,nombre=document.getElementById('cfg-nombre').value.trim(),claveV=document.getElementById('cfg-clave').value.trim(),puesto=document.getElementById('cfg-puesto').value.trim(),horaEnt=document.getElementById('cfg-hora-entrada').value,horaSal=document.getElementById('cfg-hora-salida').value,descanso=document.getElementById('cfg-descanso').value,minCom=parseInt(document.getElementById('cfg-min-comida').value)||60,claveEnc=document.getElementById('cfg-clave-enc').value.trim(),encargado=document.getElementById('cfg-encargado').checked;
-  if(!nombre||!claveV){showMsg('Nombre y clave obligatorios.','red');return;}if(!/^\d+$/.test(claveV)){showMsg('La clave debe ser numérica.','red');return;}
-  try{await POST('empleados',{tienda:num,nombre,clave:claveV,puesto,hora_limite:horaEnt,hora_salida:horaSal,dia_descanso:descanso,minutos_comida:minCom,encargado,clave_encargado:claveEnc||null});['cfg-nombre','cfg-clave','cfg-puesto','cfg-clave-enc'].forEach(id=>document.getElementById(id).value='');document.getElementById('cfg-encargado').checked=false;showMsg('✓ '+nombre+' agregado.','green');renderCfgEmps();}
-  catch(e){if(e.message.includes('unique'))showMsg('Esa clave ya está en uso.','red');else showMsg('Error: '+e.message,'red');}
+  const num=document.getElementById('cfg-tienda').value;
+  const nombre=document.getElementById('cfg-nombre').value.trim();
+  const claveV=document.getElementById('cfg-clave').value.trim();
+  const puesto=document.getElementById('cfg-puesto').value.trim();
+  const horaEnt=document.getElementById('cfg-hora-entrada').value;
+  const horaSal=document.getElementById('cfg-hora-salida').value;
+  const descanso=document.getElementById('cfg-descanso').value;
+  const minCom=parseInt(document.getElementById('cfg-min-comida').value)||60;
+  const claveEnc=document.getElementById('cfg-clave-enc').value.trim();
+  const encargado=document.getElementById('cfg-encargado').checked;
+  const contrato=document.getElementById('cfg-contrato')?.value||'regular';
+  const diasVal=document.getElementById('cfg-dias-valor')?.value||'lun,mar,mie,jue,vie';
+  const notas=document.getElementById('cfg-notas')?.value.trim()||'';
+  if(!nombre||!claveV){showMsg('Nombre y clave obligatorios.','red');return;}
+  if(!/^\d+$/.test(claveV)){showMsg('La clave debe ser numérica.','red');return;}
+  try{
+    await POST('empleados',{
+      tienda:num,nombre,clave:claveV,puesto,
+      hora_limite:horaEnt,hora_salida:horaSal,
+      dia_descanso:descanso,minutos_comida:minCom,
+      encargado,clave_encargado:claveEnc||null,
+      tipo_contrato:contrato,
+      dias_laborales:contrato==='regular'?'lun,mar,mie,jue,vie,sab,dom':diasVal,
+      notas
+    });
+    ['cfg-nombre','cfg-clave','cfg-puesto','cfg-clave-enc','cfg-notas'].forEach(id=>{
+      const el=document.getElementById(id);if(el)el.value='';
+    });
+    document.getElementById('cfg-encargado').checked=false;
+    if(document.getElementById('cfg-contrato'))document.getElementById('cfg-contrato').value='regular';
+    if(document.getElementById('cfg-dias-wrap'))document.getElementById('cfg-dias-wrap').style.display='none';
+    showMsg('✓ '+nombre+' agregado.','green');
+    renderCfgEmps();
+  }catch(e){
+    if(e.message.includes('unique'))showMsg('Esa clave ya está en uso.','red');
+    else showMsg('Error: '+e.message,'red');
+  }
 }
-function abrirEditar(id,nombre,clave,puesto,horaEnt,horaSal,descanso,minCom,claveEnc){document.getElementById('edit-id').value=id;document.getElementById('edit-nombre').value=nombre;document.getElementById('edit-clave').value=clave;document.getElementById('edit-puesto').value=puesto||'';document.getElementById('edit-hora-entrada').value=horaEnt||'09:30';document.getElementById('edit-hora-salida').value=horaSal||'19:30';document.getElementById('edit-descanso').value=descanso||'domingo';document.getElementById('edit-min-comida').value=minCom||60;document.getElementById('edit-clave-enc').value=claveEnc||'';document.getElementById('edit-msg').style.display='none';document.getElementById('modal-editar').classList.add('open');}
+function toggleDiasLaborales(){
+  const contrato=document.getElementById('cfg-contrato')?.value;
+  const wrap=document.getElementById('cfg-dias-wrap');
+  if(!wrap)return;
+  if(contrato==='estudiante'||contrato==='medio_tiempo'){
+    wrap.style.display='block';
+    renderSelectorDias('cfg-dias-selector',
+      contrato==='estudiante'?'lun,mie,vie':'lun,mar,mie,jue,vie');
+  }else{
+    wrap.style.display='none';
+  }
+}
+function abrirEditar(id,nombre,clave,puesto,horaEnt,horaSal,descanso,minCom,claveEnc){document.getElementById('edit-clave').value=clave;document.getElementById('edit-puesto').value=puesto||'';document.getElementById('edit-hora-entrada').value=horaEnt||'09:30';document.getElementById('edit-hora-salida').value=horaSal||'19:30';document.getElementById('edit-descanso').value=descanso||'domingo';document.getElementById('edit-min-comida').value=minCom||60;document.getElementById('edit-clave-enc').value=claveEnc||'';document.getElementById('edit-msg').style.display='none';document.getElementById('modal-editar').classList.add('open');}
 async function guardarEdicion(){
   const id=document.getElementById('edit-id').value,nombre=document.getElementById('edit-nombre').value.trim(),claveV=document.getElementById('edit-clave').value.trim(),puesto=document.getElementById('edit-puesto').value.trim(),horaEnt=document.getElementById('edit-hora-entrada').value,horaSal=document.getElementById('edit-hora-salida').value,descanso=document.getElementById('edit-descanso').value,minCom=parseInt(document.getElementById('edit-min-comida').value)||60,claveEnc=document.getElementById('edit-clave-enc').value.trim(),msg=document.getElementById('edit-msg');
   if(!nombre||!claveV){msg.textContent='Nombre y clave obligatorios.';msg.style.color='var(--red)';msg.style.display='block';return;}
@@ -2158,6 +2299,175 @@ async function borrarPuesto(id,nombre){
   catch(e){alert('Error: '+e.message);}
 }
 // ── FIN TURNOS Y PUESTOS ──────────────────────────────
+
+// ── USO DE HORAS EXTRAS ───────────────────────────────
+let _uexClave='',_uexNombre='',_uexTienda='',_uexDisponibles=0;
+
+async function abrirUsoExtras(clave,nombre,tienda){
+  _uexClave=clave;_uexNombre=nombre;_uexTienda=tienda;
+  document.getElementById('uso-extras-nombre').textContent=nombre;
+  document.getElementById('uex-fecha').value=hoy();
+  document.getElementById('uex-tipo').value='entrada_tarde';
+  document.getElementById('uex-minutos').value='';
+  document.getElementById('uex-nota').value='';
+  document.getElementById('uex-preview').style.display='none';
+  document.getElementById('uex-err').style.display='none';
+  // Cargar extras disponibles
+  try{
+    const ac=await GET('acumulados','select=minutos_extras&empleado_clave=eq.'+clave);
+    _uexDisponibles=ac.length?ac[0].minutos_extras:0;
+    const h=Math.floor(_uexDisponibles/60),m=_uexDisponibles%60;
+    document.getElementById('uso-extras-disp').textContent=
+      '⭐ Extras disponibles: '+(h>0?h+'h ':'')+m+'min ('+_uexDisponibles+' min)';
+    document.getElementById('uso-extras-disp').style.color=_uexDisponibles>0?'var(--green)':'var(--elite-red)';
+  }catch(e){document.getElementById('uso-extras-disp').textContent='Error al cargar extras';}
+  document.getElementById('modal-uso-extras').classList.add('open');
+}
+
+function calcUsoExtras(){
+  const mins=parseInt(document.getElementById('uex-minutos').value||0);
+  const tipo=document.getElementById('uex-tipo').value;
+  const prev=document.getElementById('uex-preview');
+  const err=document.getElementById('uex-err');
+  err.style.display='none';
+  if(!mins||mins<=0){prev.style.display='none';return;}
+  if(mins>_uexDisponibles){
+    err.textContent='No tienes suficientes extras. Disponibles: '+_uexDisponibles+' min';
+    err.style.display='block';prev.style.display='none';return;
+  }
+  const restante=_uexDisponibles-mins;
+  const rh=Math.floor(restante/60),rm=restante%60;
+  const tipoLabel={
+    'entrada_tarde':'Podrá llegar '+mins+' min más tarde de su hora de entrada',
+    'salida_temprana':'Podrá salir '+mins+' min antes de su hora de salida',
+    'mas_comida':'Podrá tomar '+mins+' min adicionales de comida',
+    'retardo':'Se descontarán '+mins+' min de su saldo de retardos pendientes',
+    'otro':'Se descontarán '+mins+' min de sus extras acumulados'
+  }[tipo]||'';
+  prev.style.display='block';
+  prev.innerHTML='<strong>'+tipoLabel+'</strong><br>'
+    +'Extras restantes después: <strong style="color:'+(restante>0?'var(--green)':'var(--text3)')+'">'+rh+'h '+rm+'min</strong>';
+}
+
+async function confirmarUsoExtras(){
+  const mins=parseInt(document.getElementById('uex-minutos').value||0);
+  const tipo=document.getElementById('uex-tipo').value;
+  const fecha=document.getElementById('uex-fecha').value;
+  const nota=document.getElementById('uex-nota').value.trim();
+  const err=document.getElementById('uex-err');
+  err.style.display='none';
+  if(!mins||mins<=0){err.textContent='Ingresa los minutos a usar.';err.style.display='block';return;}
+  if(mins>_uexDisponibles){err.textContent='No hay suficientes extras disponibles.';err.style.display='block';return;}
+  if(!fecha){err.textContent='Selecciona una fecha.';err.style.display='block';return;}
+  try{
+    // Registrar uso
+    await POST('uso_extras',{
+      empleado_clave:_uexClave,empleado_nombre:_uexNombre,tienda:_uexTienda,
+      fecha,minutos:mins,tipo,
+      descripcion:nota||({
+        'entrada_tarde':'Permiso entrada tarde',
+        'salida_temprana':'Permiso salida temprana',
+        'mas_comida':'Tiempo extra de comida',
+        'retardo':'Descuento de retardo',
+        'otro':'Uso de extras'
+      }[tipo]||''),
+      autorizado_por:nivelAdmin===1?'admin1':(tiendaEncargado?'encargado':'admin2')
+    });
+    // Restar del acumulado
+    const nuevoTotal=_uexDisponibles-mins;
+    await PATCH('acumulados',{minutos_extras:nuevoTotal},'empleado_clave=eq.'+_uexClave);
+    // Registrar en historial
+    await POST('historial_saldos',{
+      empleado_clave:_uexClave,empleado_nombre:_uexNombre,tienda:_uexTienda,
+      fecha,tipo:'extras_usados',minutos:mins,
+      descripcion:'Extras usados ('+({
+        'entrada_tarde':'entrada tarde','salida_temprana':'salida temprana',
+        'mas_comida':'más comida','retardo':'cubrir retardo','otro':'otro'
+      }[tipo]||tipo)+')'+(nota?' — '+nota:'')
+    });
+    // Si es retardo, cancelar retardos pendientes por esos minutos
+    if(tipo==='retardo'){
+      const rets=await GET('retardos','select=*&empleado_clave=eq.'+_uexClave+'&saldo_pagado=eq.false&order=fecha.asc');
+      let porPagar=mins;
+      for(const r of rets){
+        if(porPagar<=0)break;
+        const pend=r.minutos_tarde-(r.minutos_cubiertos||0);
+        if(porPagar>=pend){
+          await PATCH('retardos',{saldo_pagado:true,minutos_cubiertos:r.minutos_tarde,fecha_pago:fecha},'id=eq.'+r.id);
+          porPagar-=pend;
+        }else{
+          await PATCH('retardos',{minutos_cubiertos:(r.minutos_cubiertos||0)+porPagar},'id=eq.'+r.id);
+          porPagar=0;
+        }
+      }
+    }
+    // Si quedó en 0, limpiar acumulados
+    if(nuevoTotal<=0){
+      await PATCH('acumulados',{minutos_extras:0},'empleado_clave=eq.'+_uexClave);
+    }
+    cerrarModal('modal-uso-extras');
+    alert('✓ Extras registrados correctamente.\nQuedan '+(nuevoTotal>0?Math.floor(nuevoTotal/60)+'h '+(nuevoTotal%60)+'min':'0 min')+' disponibles.');
+    renderExtras();
+  }catch(e){err.textContent='Error: '+e.message;err.style.display='block';}
+}
+
+// Botón de uso de extras en tabla admin Extras/Comida
+async function renderExtras(){
+  const tb=document.getElementById('tbody-extras');
+  const tiendaFiltro=document.getElementById('fex-tienda')?.value||'';
+  tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:1rem;color:var(--text3)">Cargando...</td></tr>';
+  try{
+    let p='select=*&order=empleado_nombre';
+    if(tiendaFiltro)p+='&tienda=eq.'+tiendaFiltro;
+    const ac=await GET('acumulados',p);
+    if(!ac.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text3)">Sin acumulados.</td></tr>';return;}
+    tb.innerHTML=ac.map(a=>{
+      const hE=Math.floor(a.minutos_extras/60),mE=a.minutos_extras%60;
+      const tieneExtras=a.minutos_extras>0;
+      return'<tr>'
+        +'<td style="color:var(--text);font-weight:500">'+nomT(a.tienda)+'</td>'
+        +'<td style="color:var(--text);font-weight:600">'+a.empleado_nombre+'</td>'
+        +'<td>'+(tieneExtras?'<span style="color:var(--green);font-weight:700">'+(hE>0?hE+'h ':'')+mE+' min</span>':'<span style="color:var(--text3)">0 min</span>')+
+          ' <button onclick="toggleDetalle(\''+a.id+'\',\''+a.empleado_clave+'\',\'extra\')" style="font-size:10px;padding:1px 7px;background:var(--bg3);border-radius:10px;box-shadow:none">▸ ver días</button></td>'
+        +'<td>'+(a.minutos_comida_exceso>0?'<span style="color:var(--amber);font-weight:700">'+a.minutos_comida_exceso+' min</span>':'<span style="color:var(--text3)">0 min</span>')+
+          ' <button onclick="toggleDetalle(\''+a.id+'\',\''+a.empleado_clave+'\',\'comida\')" style="font-size:10px;padding:1px 7px;background:var(--bg3);border-radius:10px;box-shadow:none">▸ ver días</button></td>'
+        +'<td class="no-print"><button onclick="editarAcumulado(\''+a.id+'\',\'extras\')" class="btn-warn" style="font-size:11px;padding:3px 10px">✏️ Extras</button></td>'
+        +'<td class="no-print">'+(tieneExtras?'<button onclick="abrirUsoExtras(\''+a.empleado_clave+'\',\''+a.empleado_nombre.replace(/'/g,"\\'")+ '\',\''+a.tienda+'\')" class="btn-success" style="font-size:11px;padding:3px 10px">⭐ Usar</button>':'')+
+          ' <button onclick="editarAcumulado(\''+a.id+'\',\'comida\')" class="btn-warn" style="font-size:11px;padding:3px 10px">✏️ Comida</button></td>'
+        +'<td class="no-print"><button onclick="resetAcumulado(\''+a.id+'\')" class="btn-danger" style="font-size:11px">Reset</button></td>'
+        +'</tr>'
+        +'<tr id="det-'+a.id+'" style="display:none"><td colspan="7"><div id="det-body-'+a.id+'" style="padding:8px 16px;background:var(--bg3);border-radius:8px;margin:4px 0"></div></td></tr>';
+    }).join('');
+  }catch(e){tb.innerHTML='<tr><td colspan="7" style="color:var(--red);padding:1rem;text-align:center">Error: '+e.message+'</td></tr>';}
+}
+
+// ── TIPO CONTRATO Y DÍAS LABORALES ────────────────────
+const DIAS_SEMANA_CORTOS=['lun','mar','mie','jue','vie','sab','dom'];
+const DIAS_SEMANA_NOMBRE=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+
+function renderSelectorDias(idContainer, diasActuales){
+  const diasArr=diasActuales?diasActuales.split(','):['lun','mar','mie','jue','vie'];
+  const container=document.getElementById(idContainer);
+  if(!container)return;
+  container.innerHTML=DIAS_SEMANA_CORTOS.map((d,i)=>{
+    const sel=diasArr.includes(d);
+    return`<label style="display:inline-flex;align-items:center;gap:4px;margin-right:10px;font-size:13px;cursor:pointer">
+      <input type="checkbox" value="${d}" ${sel?'checked':''} onchange="actualizarDiasLaborales('${idContainer}')">
+      ${DIAS_SEMANA_NOMBRE[i]}
+    </label>`;
+  }).join('');
+}
+
+function actualizarDiasLaborales(idContainer){
+  const container=document.getElementById(idContainer);
+  if(!container)return;
+  const checks=container.querySelectorAll('input[type=checkbox]:checked');
+  const dias=Array.from(checks).map(c=>c.value).join(',');
+  const inp=document.getElementById(idContainer.replace('dias-selector','dias-valor'));
+  if(inp)inp.value=dias;
+}
+
+// ── FIN USO EXTRAS Y CONTRATO ─────────────────────────
 let chatInterval=null;
 async function renderChat(){
   const tienda=document.getElementById('fchat-tienda')?.value||'';
